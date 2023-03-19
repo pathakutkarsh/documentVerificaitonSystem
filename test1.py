@@ -1,18 +1,16 @@
 import cv2 as cv2
 import numpy as np
 
-def scan(inputImage,resizeLimit=1080,morphologyIteration=6, cannyLowerThreshold=100):
+def scan(inputImage,resizeLimit=720,morphologyIteration=6):
     # Resize image to workable size
     imageSizeLimit = resizeLimit
-    # scalingFactor=0
     maxInputImageSize = max(inputImage.shape)
     if maxInputImageSize > imageSizeLimit:
         scalingFactor = imageSizeLimit / maxInputImageSize
         inputImage = cv2.resize(inputImage, None, fx=scalingFactor, fy=scalingFactor)
     # Copy of resized original image for later use
-    resizedInputImageCopy = inputImage.copy()
+    inputImageCopy = inputImage.copy()
     # Repeated Closing operation to remove text from the document.
-    cv2.imwrite("scale.png", inputImage)
     kernel = np.ones((5, 5), np.uint8)
     inputImage = cv2.morphologyEx(inputImage, cv2.MORPH_CLOSE, kernel, iterations=morphologyIteration)
     # cv2.imwrite("Morphology.png", inputImage)
@@ -21,18 +19,21 @@ def scan(inputImage,resizeLimit=1080,morphologyIteration=6, cannyLowerThreshold=
     mask = np.zeros(inputImage.shape[:2], np.uint8)
     bgdModel = np.zeros((1, 65), np.float64)
     fgdModel = np.zeros((1, 65), np.float64)
-    rect = (20, 20, inputImage.shape[1] - 10, inputImage.shape[0] - 10)
-    cv2.grabCut(inputImage, mask, rect, bgdModel, fgdModel, 3, cv2.GC_INIT_WITH_RECT)
+    rect = (20, 20, inputImage.shape[1] - 20, inputImage.shape[0] - 20)
+    cv2.grabCut(inputImage, mask, rect, bgdModel, fgdModel, 5, cv2.GC_INIT_WITH_RECT)
     mask2 = np.where((mask == 2) | (mask == 0), 0, 1).astype('uint8')
     inputImage = inputImage * mask2[:, :, np.newaxis]
-    cv2.grabCut(inputImage, mask, rect, bgdModel, fgdModel, 3, cv2.GC_INIT_WITH_RECT)
+    cv2.grabCut(inputImage, mask, rect, bgdModel, fgdModel, 5, cv2.GC_INIT_WITH_RECT)
+    mask2 = np.where((mask == 2) | (mask == 0), 0, 1).astype('uint8')
+    inputImage = inputImage * mask2[:, :, np.newaxis]
+    # cv2.imwrite("Grabcut.png", inputImage)
     gray = cv2.cvtColor(inputImage, cv2.COLOR_BGR2GRAY)
     gray = cv2.GaussianBlur(gray, (11, 11), 1)
     # cv2.imwrite("gray.png", gray)
     # Edge Detection.
-    canny = cv2.Canny(gray, cannyLowerThreshold, 200)
+    canny = cv2.Canny(gray, 50, 100)
     canny = cv2.dilate(canny, cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (5, 5)))
-    cv2.imwrite("canny.png", canny)
+    # cv2.imwrite("canny.png", canny)
     # Finding contours for the detected edges.
     contours, hierarchy = cv2.findContours(canny, cv2.RETR_LIST, cv2.CHAIN_APPROX_NONE)
     # Keeping only the largest detected contour.
@@ -41,7 +42,7 @@ def scan(inputImage,resizeLimit=1080,morphologyIteration=6, cannyLowerThreshold=
     # Detecting Edges through Contour approximation.
     # Loop over the contours.
     if len(page) == 0:
-        return resizedInputImageCopy
+        return inputImageCopy
     for c in page:
         # Approximate the contour.
         epsilon = 0.02 * cv2.arcLength(c, True)
@@ -56,14 +57,13 @@ def scan(inputImage,resizeLimit=1080,morphologyIteration=6, cannyLowerThreshold=
  
     destination_corners = find_dest(corners)
  
-    # h, w = inputImageCopy.shape[:2]
+    h, w = inputImageCopy.shape[:2]
     # Getting the homography.
     M = cv2.getPerspectiveTransform(np.float32(corners), np.float32(destination_corners))
     # Perspective transform using homography.
-    finalImage = cv2.warpPerspective(resizedInputImageCopy, M, (destination_corners[2][0], destination_corners[2][1]),
-                                flags=cv2.INTER_LINEAR)
-    return finalImage
-
+    final = cv2.warpPerspective(inputImageCopy, M, (destination_corners[2][0], destination_corners[2][1]),
+                                flags=cv2.INTER_LINEAR)    
+    return final
 
 
 def order_points(pts):
@@ -100,9 +100,3 @@ def find_dest(pts):
     destination_corners = [[0, 0], [maxWidth, 0], [maxWidth, maxHeight], [0, maxHeight]]
  
     return order_points(destination_corners)
-
-
-# scan(cv2.imread('/mnt/d/Personal Projects/python/sample6.jpg'))
-
-# for increasing the output resolution and decreasing the time need to make copy of original without resizing and
-# change coordinates based on the change in resolution. 

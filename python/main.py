@@ -5,6 +5,7 @@ import time
 import cv2 as cv2
 from imageSplicing import imageSplicing
 from documentScanning import scan
+from qrscanning import Validation
 
 
 def main(inputImagePath):
@@ -39,3 +40,4 @@ if __name__ == '__main__':
                 # imageSplicing('/mnt/d/Personal Projects/python/DocumentVerification/'+fileName)
                 #imageSplicing('/mnt/d/Personal Projects/python/DocumentVerification/'+fileName)
                 imageSplicing(sys.argv[numberOfArgument])
+                Validation(imageFilePath=fileName)

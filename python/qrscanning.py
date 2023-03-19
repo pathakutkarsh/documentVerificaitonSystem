@@ -1,19 +1,9 @@
-# !pip install pyzbar
-# !apt install libzbar0
-# !sudo apt install tesseract-ocr
-# !pip install pytesseract
-
 import numpy as np
 import cv2
 import pytesseract
-import pyzbar
 from pyzbar.pyzbar import decode
 import pyzbar.pyzbar as pyzbar
 from PIL import Image as im
-image = cv2.imread("/content/resultFAKE.jpg")
-#from google.colab.patches import cv2_imshow
-#cv2_imshow(image)
-
 # OPTICAL CHARACTER RECOGNITION
 def OCR(image):
   extractedInformation = pytesseract.image_to_string(image)
@@ -57,13 +47,15 @@ def barcodescan(image):
 
 
 # VALIDATION OF TEXT
-def Validation(Info):
+def Validation(imageFilePath):
+  image = cv2.imread(imageFilePath) 
   x=[]
-  b=(str(a))
-  b=b.lower()
-  ls=b.split()
-  Info=Info.lower()
-  ls2=Info.split()
+  barcodeResults=(str(barcodescan(image)))
+  barcodeResults=barcodeResults.lower()
+  ls=barcodeResults.split()
+  ocrResults= OCR(image)
+  ocrResults=ocrResults.lower()
+  ls2=ocrResults.split()
   #print(ls)
   #print(ls2)
   #ls.pop(0)
@@ -85,7 +77,5 @@ def Validation(Info):
   else:
     print("Document Validated")
 
-Info=OCR(image)
-a=barcodescan(image)
-Validation(Info)
+# Validation("/mnt/d/Projects/DocumentVerificationSystem/sample12e.jpg")
 
