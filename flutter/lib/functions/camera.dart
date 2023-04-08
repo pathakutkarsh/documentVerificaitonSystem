@@ -1,34 +1,15 @@
-import 'package:camera/camera.dart';
+import 'package:image_picker/image_picker.dart';
 
-late CameraController _cameraController;
-
-Future availCamera() async {
-  final camerasList = await availableCameras();
-  return camerasList;
+final ImagePicker _picker = ImagePicker();
+// Pick an image
+pickImageFromGallery() {
+  return _picker.pickImage(source: ImageSource.gallery);
 }
 
-Future initCamera(CameraDescription cameraDescription) async {
-// create a CameraController
-  _cameraController =
-      CameraController(cameraDescription, ResolutionPreset.high);
-// Next, initialize the controller. This returns a Future.
-  try {
-    await _cameraController.initialize().then((_) {
-      return _;
-    });
-  } on CameraException catch (e) {
-    print("camera error $e");
-  }
+Future<XFile?> pickImageFromCamera() {
+  return _picker.pickImage(source: ImageSource.camera);
 }
 
-Future disposeCamera() async {
-  await _cameraController.dispose();
-}
-
-bool iscontrollerInitialized() {
-  return _cameraController.value.isInitialized;
-}
-
-getCameraController() {
-  return _cameraController;
+Future<List<XFile>> pickMultipleFromGallery() {
+  return _picker.pickMultiImage();
 }

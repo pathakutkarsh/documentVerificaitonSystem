@@ -1,7 +1,8 @@
-import 'package:document_verification_system/cameraPreview.dart';
 import 'package:document_verification_system/constants/colors.dart';
 import 'package:document_verification_system/functions/camera.dart';
+import 'package:document_verification_system/uploadScreen.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 
 import 'constants/size.dart';
 
@@ -16,12 +17,10 @@ class _DashboardState extends State<Dashboard> {
   @override
   void initState() {
     super.initState();
-    availCamera().then((value) => initCamera(value[0]));
   }
 
   @override
   void dispose() {
-    disposeCamera();
     super.dispose();
   }
 
@@ -94,7 +93,23 @@ class _DashboardState extends State<Dashboard> {
               // crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 IconButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    List<XFile> pickedImageFromGallery = [];
+                    pickMultipleFromGallery()
+                        .then((value) => pickedImageFromGallery = value)
+                        .whenComplete(() {
+                      pickedImageFromGallery.isNotEmpty
+                          ? Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => UploadScreen(
+                                        imageList: pickedImageFromGallery,
+                                      )),
+                            )
+                          : null;
+                    });
+                    print(pickedImageFromGallery);
+                  },
                   icon: const Icon(Icons.folder_copy_outlined),
                 ),
                 IconButton(
@@ -108,16 +123,13 @@ class _DashboardState extends State<Dashboard> {
             bottom: screenHeight(context) * 0.09,
             child: InkWell(
               onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const CameraPreiewPage(),
-                  ),
-                );
+                pickImageFromCamera()
+                    .then((value) => print(value!.path))
+                    .whenComplete(() => print("Image completed"));
               },
               child: Container(
-                width: 80,
-                height: 80,
+                width: size_80,
+                height: size_80,
                 decoration: BoxDecoration(
                     shape: BoxShape.circle,
                     color: primary,
