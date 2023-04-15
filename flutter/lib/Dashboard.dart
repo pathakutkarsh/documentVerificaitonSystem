@@ -3,7 +3,6 @@ import 'package:document_verification_system/functions/camera.dart';
 import 'package:document_verification_system/uploadScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-
 import 'constants/size.dart';
 
 class Dashboard extends StatefulWidget {
