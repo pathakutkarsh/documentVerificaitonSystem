@@ -1,6 +1,7 @@
 import 'package:document_verification_system/constants/colors.dart';
 import 'package:document_verification_system/functions/camera.dart';
-import 'package:document_verification_system/uploadScreen.dart';
+import 'package:document_verification_system/upload_screen.dart';
+import 'package:document_verification_system/widgets/dashboard_card.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'constants/size.dart';
@@ -43,28 +44,39 @@ class _DashboardState extends State<Dashboard> {
       body: Column(
         children: [
           Container(
-              height: screenHeight(context) * 0.2,
-              width: screenWidth(context),
-              decoration: const BoxDecoration(
-                color: primary,
-                borderRadius: BorderRadius.only(
-                  bottomRight: Radius.circular(100),
-                ),
+            height: screenHeight(context) * 0.2,
+            width: screenWidth(context),
+            decoration: const BoxDecoration(
+              color: primary,
+              borderRadius: BorderRadius.only(
+                bottomRight: Radius.circular(100),
               ),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.end,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: const [
-                  Padding(
-                    padding: EdgeInsets.all(size_12),
-                    child: Text(
-                      "All Documents",
-                      style: TextStyle(fontSize: size_40, color: base),
-                      overflow: TextOverflow.ellipsis,
-                    ),
+            ),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.end,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: const [
+                Padding(
+                  padding: EdgeInsets.all(size_12),
+                  child: Text(
+                    "All Documents",
+                    style: TextStyle(fontSize: size_40, color: base),
+                    overflow: TextOverflow.ellipsis,
                   ),
-                ],
-              )),
+                ),
+              ],
+            ),
+          ),
+          Expanded(
+            child: ListView.builder(
+              padding: EdgeInsets.only(bottom: screenHeight(context) * 0.14),
+              shrinkWrap: true,
+              itemCount: 7,
+              itemBuilder: ((context, index) {
+                return const DashboardCard();
+              }),
+            ),
+          ),
         ],
       ),
       bottomSheet: Stack(
