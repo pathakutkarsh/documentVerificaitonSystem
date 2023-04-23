@@ -1,7 +1,7 @@
 import cv2 as cv2
 import numpy as np
 
-def scan(inputImage,resizeLimit=1080,morphologyIteration=6, cannyLowerThreshold=100):
+def scan(inputImage,resizeLimit=1080,morphologyIteration=6, cannyUpperThreshold=200):
     # Resize image to workable size
     imageSizeLimit = resizeLimit
     # scalingFactor=0
@@ -30,7 +30,7 @@ def scan(inputImage,resizeLimit=1080,morphologyIteration=6, cannyLowerThreshold=
     gray = cv2.GaussianBlur(gray, (11, 11), 1)
     # cv2.imwrite("gray.png", gray)
     # Edge Detection.
-    canny = cv2.Canny(gray, cannyLowerThreshold, 200)
+    canny = cv2.Canny(gray, 0, cannyUpperThreshold)
     canny = cv2.dilate(canny, cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (5, 5)))
     cv2.imwrite("canny.png", canny)
     # Finding contours for the detected edges.
