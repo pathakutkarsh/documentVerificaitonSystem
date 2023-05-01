@@ -36,11 +36,11 @@ const double size_30 = 30;
 const double size_40 = 40;
 const double size_50 = 50;
 const double size_60 = 60;
+const double size_65 = 65;
 const double size_70 = 70;
 const double size_80 = 80;
 const double size_90 = 90;
 const double size_100 = 100;
 const double size_110 = 110;
 const double size_120 = 120;
-
-
+const double size_200 = 200;

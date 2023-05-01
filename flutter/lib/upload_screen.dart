@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:document_verification_system/constants/colors.dart';
 import 'package:document_verification_system/constants/size.dart';
+import 'package:document_verification_system/functions/uploadImage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -20,6 +21,7 @@ class _UploadScreen extends State<UploadScreen>
   @override
   void initState() {
     super.initState();
+    uploadFilesHttpPostRequest();
     _animationController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 2000),

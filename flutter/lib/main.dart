@@ -1,5 +1,5 @@
+import 'package:document_verification_system/constants/colors.dart';
 import 'package:flutter/material.dart';
-
 import 'dashboard.dart';
 
 void main() {
@@ -15,8 +15,8 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Document Scanner',
       theme: ThemeData(
-          colorScheme: ColorScheme.fromSwatch().copyWith(
-              primary: const Color(0xFF4a90e4), secondary: Colors.white)),
+          colorScheme: ColorScheme.fromSwatch()
+              .copyWith(primary: primary, secondary: base)),
       home: const Dashboard(),
     );
   }

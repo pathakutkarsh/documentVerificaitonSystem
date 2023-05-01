@@ -1,7 +1,9 @@
 import 'package:document_verification_system/constants/colors.dart';
 import 'package:document_verification_system/functions/camera.dart';
+import 'package:document_verification_system/settings_page.dart';
 import 'package:document_verification_system/upload_screen.dart';
 import 'package:document_verification_system/widgets/dashboard_card.dart';
+import 'package:document_verification_system/widgets/enter_code.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'constants/size.dart';
@@ -27,44 +29,63 @@ class _DashboardState extends State<Dashboard> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: base,
+      drawer: Drawer(
+        backgroundColor: base,
+        child: ListView(
+          reverse: true,
+          padding: EdgeInsets.zero,
+          children: [
+            // DrawerHeader(child: Text("Settings")),
+            ListTile(
+              contentPadding: const EdgeInsets.symmetric(horizontal: size_20),
+              trailing: const Icon(Icons.settings),
+              title: const Text("Settings"),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const SettingsPage(),
+                  ),
+                );
+              },
+            )
+          ],
+        ),
+      ),
       appBar: AppBar(
+        backgroundColor: primary,
         shadowColor: Colors.transparent,
         primary: true,
-        leading: IconButton(
-          iconSize: size_30,
-          icon: const Icon(Icons.search_sharp),
-          onPressed: () {},
-        ),
-        actions: const [
-          CircleAvatar(
-            child: Icon(Icons.face),
-          )
-        ],
       ),
       body: Column(
         children: [
-          Container(
-            height: screenHeight(context) * 0.2,
-            width: screenWidth(context),
-            decoration: const BoxDecoration(
-              color: primary,
-              borderRadius: BorderRadius.only(
-                bottomRight: Radius.circular(100),
-              ),
+          ClipRRect(
+            clipBehavior: Clip.antiAliasWithSaveLayer,
+            borderRadius: const BorderRadius.only(
+              bottomRight: Radius.circular(size_100),
             ),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.end,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: const [
-                Padding(
-                  padding: EdgeInsets.all(size_12),
-                  child: Text(
-                    "All Documents",
-                    style: TextStyle(fontSize: size_40, color: base),
-                    overflow: TextOverflow.ellipsis,
+            child: Container(
+              color: primary,
+              height: screenHeight(context) * 0.2,
+              width: screenWidth(context),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.end,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: const [
+                  Padding(
+                    padding: EdgeInsets.all(size_12),
+                    child: Text(
+                      "All Documents",
+                      style: TextStyle(
+                          fontSize: size_40,
+                          color: base,
+                          backgroundColor: Colors.transparent),
+                      overflow: TextOverflow.ellipsis,
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
           Expanded(
@@ -134,9 +155,14 @@ class _DashboardState extends State<Dashboard> {
             bottom: screenHeight(context) * 0.09,
             child: InkWell(
               onTap: () {
-                pickImageFromCamera()
-                    .then((value) => print(value!.path))
-                    .whenComplete(() => print("Image completed"));
+                showDialog(
+                    context: context,
+                    builder: (context) {
+                      return const EnterCodeDialog();
+                    });
+                // pickImageFromCamera()
+                //     .then((value) => print(value!.path))
+                //     .whenComplete(() => print("Image completed"));
               },
               child: Container(
                 width: size_80,
