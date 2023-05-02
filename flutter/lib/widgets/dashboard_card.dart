@@ -3,7 +3,8 @@ import 'package:document_verification_system/constants/size.dart';
 import 'package:flutter/material.dart';
 
 class DashboardCard extends StatelessWidget {
-  const DashboardCard({super.key});
+  String fileName = '';
+  DashboardCard({super.key, this.fileName = "FileName"});
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +23,7 @@ class DashboardCard extends StatelessWidget {
           style: ListTileStyle.drawer,
           tileColor: base,
           leading: Image.asset("lib/assets/pdf.png"),
-          title: const Text("Document Name Goes Here"),
+          title: Text(fileName),
           trailing: const Icon(
             Icons.arrow_right_rounded,
             color: primary,

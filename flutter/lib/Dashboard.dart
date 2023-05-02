@@ -92,9 +92,11 @@ class _DashboardState extends State<Dashboard> {
             child: ListView.builder(
               padding: EdgeInsets.only(bottom: screenHeight(context) * 0.14),
               shrinkWrap: true,
-              itemCount: 7,
+              itemCount: 2,
               itemBuilder: ((context, index) {
-                return const DashboardCard();
+                return DashboardCard(
+                  fileName: "FileName Goes Here",
+                );
               }),
             ),
           ),
@@ -113,7 +115,7 @@ class _DashboardState extends State<Dashboard> {
               ),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.grey.shade200,
+                  color: Colors.grey.shade100,
                   spreadRadius: 1,
                   blurRadius: 15,
                 )

@@ -1,4 +1,6 @@
 import 'package:document_verification_system/constants/colors.dart';
+import 'package:document_verification_system/login_screen.dart';
+import 'package:document_verification_system/signup_screen.dart';
 import 'package:flutter/material.dart';
 import 'dashboard.dart';
 
@@ -17,7 +19,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
           colorScheme: ColorScheme.fromSwatch()
               .copyWith(primary: primary, secondary: base)),
-      home: const Dashboard(),
+      home: const SignupScreen(),
     );
   }
 }
