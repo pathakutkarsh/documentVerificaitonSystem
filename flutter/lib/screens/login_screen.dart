@@ -1,7 +1,7 @@
-import 'package:document_verification_system/Dashboard.dart';
 import 'package:document_verification_system/constants/colors.dart';
 import 'package:document_verification_system/constants/size.dart';
-import 'package:document_verification_system/signup_screen.dart';
+import 'package:document_verification_system/screens/Dashboard.dart';
+import 'package:document_verification_system/screens/signup_screen.dart';
 import 'package:flutter/material.dart';
 
 class LoginScreen extends StatefulWidget {

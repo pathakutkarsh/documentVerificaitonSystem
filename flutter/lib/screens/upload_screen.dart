@@ -1,8 +1,8 @@
+import 'dart:async';
 import 'dart:io';
-
 import 'package:document_verification_system/constants/colors.dart';
 import 'package:document_verification_system/constants/size.dart';
-import 'package:document_verification_system/functions/uploadImage.dart';
+import 'package:document_verification_system/widgets/enter_code.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -21,27 +21,9 @@ class _UploadScreen extends State<UploadScreen>
   @override
   void initState() {
     super.initState();
-    uploadFilesHttpPostRequest();
-    _animationController = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 2000),
-    )
-      ..repeat(reverse: true)
-      ..addListener(
-        () {
-          if (_animationController.isCompleted) {
-            _animationController.repeat();
-          }
-          setState(() {});
-        },
-      );
-    iconColor = ColorTween(
-      begin: base,
-      end: primary,
-    ).animate(_animationController)
-      ..addListener(() {
-        setState(() {});
-      });
+    // getUploadedFile();
+    // uploadFilesHttpPostRequest();
+    // getUploadedFileById(id: "2");
   }
 
   @override
@@ -59,21 +41,23 @@ class _UploadScreen extends State<UploadScreen>
           leading: const BackButton()),
       body: SafeArea(
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Icon(
-              Icons.upload,
-              color: iconColor.value,
-              size: size_100,
+            const SizedBox(
+              height: size_30,
+            ),
+            Image.asset(
+              "lib/assets/icons/uploadicon.png",
+              color: primary,
             ),
             const SizedBox(
               height: size_30,
             ),
             Center(
               child: Container(
-                height: screenHeight(context) * 0.2,
-                width: screenWidth(context) * 0.4,
+                height: screenHeight(context) * 0.4,
+                width: screenWidth(context) * 0.8,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(10),
                 ),
@@ -94,6 +78,29 @@ class _UploadScreen extends State<UploadScreen>
               style: TextStyle(
                 color: Colors.black,
                 fontSize: size_20,
+              ),
+            ),
+            InkWell(
+              onTap: () {
+                Navigator.pop(context);
+              },
+              child: Container(
+                width: 240,
+                height: 50,
+                decoration: BoxDecoration(
+                  color: primary,
+                  borderRadius: BorderRadius.circular(30),
+                ),
+                child: const Center(
+                  child: Text(
+                    "Go Back ",
+                    style: TextStyle(
+                        color: base,
+                        fontSize: size_16,
+                        fontWeight: FontWeight.bold,
+                        fontStyle: FontStyle.normal),
+                  ),
+                ),
               ),
             )
           ],

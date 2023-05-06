@@ -1,12 +1,12 @@
 import 'package:document_verification_system/constants/colors.dart';
+import 'package:document_verification_system/constants/size.dart';
 import 'package:document_verification_system/functions/camera.dart';
-import 'package:document_verification_system/settings_page.dart';
-import 'package:document_verification_system/upload_screen.dart';
+import 'package:document_verification_system/screens/settings_page.dart';
+import 'package:document_verification_system/screens/upload_screen.dart';
 import 'package:document_verification_system/widgets/dashboard_card.dart';
 import 'package:document_verification_system/widgets/enter_code.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'constants/size.dart';
 
 class Dashboard extends StatefulWidget {
   const Dashboard({Key? key}) : super(key: key);
@@ -26,6 +26,12 @@ class _DashboardState extends State<Dashboard> {
     super.dispose();
   }
 
+  List<String> fileName = [
+    "Aadhar Card",
+    "Pan Card",
+    "SSC Certificate",
+    "HSC Certificate",
+  ];
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -92,10 +98,10 @@ class _DashboardState extends State<Dashboard> {
             child: ListView.builder(
               padding: EdgeInsets.only(bottom: screenHeight(context) * 0.14),
               shrinkWrap: true,
-              itemCount: 2,
+              itemCount: fileName.length,
               itemBuilder: ((context, index) {
                 return DashboardCard(
-                  fileName: "FileName Goes Here",
+                  fileName: fileName[index],
                 );
               }),
             ),
@@ -107,15 +113,15 @@ class _DashboardState extends State<Dashboard> {
         clipBehavior: Clip.none,
         children: [
           Container(
-            decoration: BoxDecoration(
+            decoration: const BoxDecoration(
               color: base,
-              borderRadius: const BorderRadius.only(
+              borderRadius:  BorderRadius.only(
                 topLeft: Radius.circular(size_50),
                 topRight: Radius.circular(size_50),
               ),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.grey.shade100,
+                  color: Colors.grey,
                   spreadRadius: 1,
                   blurRadius: 15,
                 )
@@ -126,30 +132,31 @@ class _DashboardState extends State<Dashboard> {
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               // crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                IconButton(
-                  onPressed: () {
-                    List<XFile> pickedImageFromGallery = [];
-                    pickMultipleFromGallery()
-                        .then((value) => pickedImageFromGallery = value)
-                        .whenComplete(() {
-                      pickedImageFromGallery.isNotEmpty
-                          ? Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => UploadScreen(
-                                        imageList: pickedImageFromGallery,
-                                      )),
-                            )
-                          : null;
-                    });
-                    print(pickedImageFromGallery);
-                  },
-                  icon: const Icon(Icons.folder_copy_outlined),
-                ),
-                IconButton(
-                  onPressed: () {},
-                  icon: const Icon(Icons.refresh),
-                ),
+                // IconButton(
+                //   onPressed: () {
+                //     List<XFile> pickedImageFromGallery = [];
+                //     pickMultipleFromGallery()
+                //         .then((value) => pickedImageFromGallery = value)
+                //         .whenComplete(() {
+                //       pickedImageFromGallery.isNotEmpty
+                //           ? Navigator.push(
+                //               context,
+                //               MaterialPageRoute(
+                //                 builder: (context) => UploadScreen(
+                //                   imageList: pickedImageFromGallery,
+                //                 ),
+                //               ),
+                //             )
+                //           : null;
+                //     });
+                //     print(pickedImageFromGallery);
+                //   },
+                //   icon: const Icon(Icons.folder_copy_outlined),
+                // ),
+                // IconButton(
+                //   onPressed: () {},
+                //   icon: const Icon(Icons.refresh),
+                // ),
               ],
             ),
           ),

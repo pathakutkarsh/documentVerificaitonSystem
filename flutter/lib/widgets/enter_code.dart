@@ -1,5 +1,6 @@
 import 'package:document_verification_system/constants/colors.dart';
 import 'package:document_verification_system/constants/size.dart';
+import 'package:document_verification_system/screens/required_document_list.dart';
 import 'package:flutter/material.dart';
 
 class EnterCodeDialog extends StatefulWidget {
@@ -75,8 +76,17 @@ class _EnterCodeDialogState extends State<EnterCodeDialog> {
                 },
               ),
             ),
-            InkWell(
-              onTap: () {},
+            TextButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const RequiredDocumentList(
+                      requestID: "adf",
+                    ),
+                  ),
+                );
+              },
               child: Container(
                 width: 240,
                 height: 50,

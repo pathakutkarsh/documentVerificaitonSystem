@@ -42,7 +42,7 @@ router.post('/postImage',async(req, res)=>{
 router.get('/getImagebyid/:id',async(req, res)=>{
     try {
         const userid = await Image.findOne({userId:req.params.id})
-        res.status(201).json({userId:userid.userId})
+        res.status(201).json({userId:userid})
         
     } catch (error) {
         return res.status(500).json({message:error.message})
