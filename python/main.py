@@ -1,3 +1,4 @@
+import os
 import random
 import string
 import sys
@@ -6,14 +7,12 @@ import cv2 as cv2
 from imageSplicing import imageSplicing
 from documentScanning import scan
 from qrscanning import Validation
-
-
 def main(inputImagePath):
     startTime=time.time()
     inputImage= cv2.imread(inputImagePath)
     for iterationNumber in range(3):
         print("Iteration number is "+ str(iterationNumber))
-        output=scan(inputImage=inputImage,resizeLimit=1080,morphologyIteration=2+iterationNumber*2, cannyLowerThreshold=100-iterationNumber*35)
+        output=scan(inputImage=inputImage,resizeLimit=1080,morphologyIteration=2+iterationNumber*2, cannyUpperThreshold=200-iterationNumber*90)
         endTime=time.time()
         print(endTime - startTime)
         # cv2.imwrite("output.png", output)
@@ -37,7 +36,5 @@ if __name__ == '__main__':
             else:
                 cv2.imwrite(fileName,outputImage)
                 print(fileName)
-                # imageSplicing('/mnt/d/Personal Projects/python/DocumentVerification/'+fileName)
-                #imageSplicing('/mnt/d/Personal Projects/python/DocumentVerification/'+fileName)
-                imageSplicing(sys.argv[numberOfArgument])
-                Validation(imageFilePath=fileName)
+                imageSplicing(os.path.abspath(fileName))
+                Validation(imageFilePath=os.path.abspath(fileName))
