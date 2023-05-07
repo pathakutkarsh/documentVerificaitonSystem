@@ -19,7 +19,7 @@ class _DocumentDetailsState extends State<DocumentDetails> {
     // TODO:Call getDocumentByID to get details
     super.initState();
   }
-
+// need to use image.network for browser viewing image
   @override
   Widget build(BuildContext context) {
     return Scaffold(

@@ -1,6 +1,7 @@
 import 'package:document_verification_system/constants/colors.dart';
 import 'package:document_verification_system/constants/size.dart';
 import 'package:document_verification_system/widgets/dashboard_card.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 class RequiredDocumentList extends StatefulWidget {
@@ -59,7 +60,12 @@ class RequiredDocumentListState extends State<RequiredDocumentList> {
           ),
           Expanded(
             child: ListView.builder(
-              padding: EdgeInsets.only(bottom: screenHeight(context) * 0.14),
+              padding: kIsWeb
+                  ? EdgeInsets.only(
+                      left: screenWidth(context) * 0.3,
+                      right: screenWidth(context) * 0.3,
+                      bottom: screenHeight(context) * 0.14)
+                  : EdgeInsets.only(bottom: screenHeight(context) * 0.14),
               shrinkWrap: true,
               itemCount: fileName.length,
               itemBuilder: ((context, index) {

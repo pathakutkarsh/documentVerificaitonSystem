@@ -5,6 +5,7 @@ import 'package:document_verification_system/screens/settings_page.dart';
 import 'package:document_verification_system/screens/upload_screen.dart';
 import 'package:document_verification_system/widgets/dashboard_card.dart';
 import 'package:document_verification_system/widgets/enter_code.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -96,7 +97,12 @@ class _DashboardState extends State<Dashboard> {
           ),
           Expanded(
             child: ListView.builder(
-              padding: EdgeInsets.only(bottom: screenHeight(context) * 0.14),
+              padding: kIsWeb
+                  ? EdgeInsets.only(
+                      left: screenWidth(context) * 0.3,
+                      right: screenWidth(context) * 0.3,
+                      bottom: screenHeight(context) * 0.14)
+                  : EdgeInsets.only(bottom: screenHeight(context) * 0.14),
               shrinkWrap: true,
               itemCount: fileName.length,
               itemBuilder: ((context, index) {
@@ -108,94 +114,70 @@ class _DashboardState extends State<Dashboard> {
           ),
         ],
       ),
-      bottomSheet: Stack(
-        alignment: AlignmentDirectional.center,
-        clipBehavior: Clip.none,
-        children: [
-          Container(
-            decoration: const BoxDecoration(
-              color: base,
-              borderRadius:  BorderRadius.only(
-                topLeft: Radius.circular(size_50),
-                topRight: Radius.circular(size_50),
-              ),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.grey,
-                  spreadRadius: 1,
-                  blurRadius: 15,
-                )
-              ],
-            ),
-            height: screenHeight(context) * 0.14,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              // crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                // IconButton(
-                //   onPressed: () {
-                //     List<XFile> pickedImageFromGallery = [];
-                //     pickMultipleFromGallery()
-                //         .then((value) => pickedImageFromGallery = value)
-                //         .whenComplete(() {
-                //       pickedImageFromGallery.isNotEmpty
-                //           ? Navigator.push(
-                //               context,
-                //               MaterialPageRoute(
-                //                 builder: (context) => UploadScreen(
-                //                   imageList: pickedImageFromGallery,
-                //                 ),
-                //               ),
-                //             )
-                //           : null;
-                //     });
-                //     print(pickedImageFromGallery);
-                //   },
-                //   icon: const Icon(Icons.folder_copy_outlined),
-                // ),
-                // IconButton(
-                //   onPressed: () {},
-                //   icon: const Icon(Icons.refresh),
-                // ),
-              ],
-            ),
-          ),
-          Positioned(
-            bottom: screenHeight(context) * 0.09,
-            child: InkWell(
-              onTap: () {
-                showDialog(
-                    context: context,
-                    builder: (context) {
-                      return const EnterCodeDialog();
-                    });
-                // pickImageFromCamera()
-                //     .then((value) => print(value!.path))
-                //     .whenComplete(() => print("Image completed"));
-              },
-              child: Container(
-                width: size_80,
-                height: size_80,
-                decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: primary,
-                    boxShadow: [
-                      BoxShadow(
-                        offset: const Offset(size_5, size_5),
-                        color: primary.withOpacity(0.4),
-                        spreadRadius: size_1,
-                        blurRadius: size_15,
-                      )
-                    ]),
-                child: const Icon(
-                  Icons.add,
-                  size: size_50,
+      bottomSheet: SingleChildScrollView(
+        child: Align(
+          alignment: Alignment.bottomCenter,
+          child: Stack(
+            alignment: AlignmentDirectional.center,
+            clipBehavior: Clip.none,
+            children: [
+              Container(
+                decoration: const BoxDecoration(
                   color: base,
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(size_50),
+                    topRight: Radius.circular(size_50),
+                  ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.grey,
+                      spreadRadius: 1,
+                      blurRadius: 15,
+                    )
+                  ],
+                ),
+                width:
+                    kIsWeb ? screenWidth(context) * 0.4 : screenWidth(context),
+                height: screenHeight(context) * 0.14,
+              ),
+              Positioned(
+                bottom: screenHeight(context) * 0.09,
+                child: InkWell(
+                  onTap: () {
+                    showDialog(
+                        context: context,
+                        builder: (context) {
+                          return const EnterCodeDialog();
+                        });
+                    // pickImageFromCamera()
+                    //     .then((value) => print(value!.path))
+                    //     .whenComplete(() => print("Image completed"));
+                  },
+                  child: Container(
+                    width: size_80,
+                    height: size_80,
+                    decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: primary,
+                        boxShadow: [
+                          BoxShadow(
+                            offset: const Offset(size_5, size_5),
+                            color: primary.withOpacity(0.4),
+                            spreadRadius: size_1,
+                            blurRadius: size_15,
+                          )
+                        ]),
+                    child: const Icon(
+                      Icons.add,
+                      size: size_50,
+                      color: base,
+                    ),
+                  ),
                 ),
               ),
-            ),
+            ],
           ),
-        ],
+        ),
       ),
     );
   }

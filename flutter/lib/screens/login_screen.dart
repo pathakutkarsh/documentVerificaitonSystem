@@ -2,6 +2,7 @@ import 'package:document_verification_system/constants/colors.dart';
 import 'package:document_verification_system/constants/size.dart';
 import 'package:document_verification_system/screens/Dashboard.dart';
 import 'package:document_verification_system/screens/signup_screen.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -67,79 +68,100 @@ class _LoginScreenState extends State<LoginScreen> {
             ),
           ),
           Padding(
-            padding: const EdgeInsets.symmetric(
-                horizontal: size_30, vertical: size_60),
-            child: TextFormField(
-              textInputAction: TextInputAction.done,
-              keyboardType: TextInputType.text,
-              controller: emailController,
-              decoration: InputDecoration(
-                border: OutlineInputBorder(
-                    borderSide: const BorderSide(
-                        width: 1, style: BorderStyle.solid, color: primary),
-                    borderRadius: BorderRadius.circular(size_7)),
-                enabledBorder: OutlineInputBorder(
-                    borderSide: const BorderSide(
-                        width: 1, style: BorderStyle.solid, color: primary),
-                    borderRadius: BorderRadius.circular(size_7)),
-                focusedBorder: OutlineInputBorder(
-                    borderSide: const BorderSide(
-                        width: 1, style: BorderStyle.solid, color: primary),
-                    borderRadius: BorderRadius.circular(size_7)),
-                labelText: 'Email',
-                hintText: "Please enter your Email address",
-                labelStyle: const TextStyle(
-                  color: primary,
-                  fontWeight: FontWeight.bold,
-                  fontSize: size_16,
+            padding: kIsWeb
+                ? EdgeInsets.symmetric(horizontal: screenWidth(context) * 0.3)
+                : EdgeInsets.all(0),
+            child: Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: size_30, vertical: size_60),
+                  child: TextFormField(
+                    textInputAction: TextInputAction.done,
+                    keyboardType: TextInputType.text,
+                    controller: emailController,
+                    decoration: InputDecoration(
+                      border: OutlineInputBorder(
+                          borderSide: const BorderSide(
+                              width: 1,
+                              style: BorderStyle.solid,
+                              color: primary),
+                          borderRadius: BorderRadius.circular(size_7)),
+                      enabledBorder: OutlineInputBorder(
+                          borderSide: const BorderSide(
+                              width: 1,
+                              style: BorderStyle.solid,
+                              color: primary),
+                          borderRadius: BorderRadius.circular(size_7)),
+                      focusedBorder: OutlineInputBorder(
+                          borderSide: const BorderSide(
+                              width: 1,
+                              style: BorderStyle.solid,
+                              color: primary),
+                          borderRadius: BorderRadius.circular(size_7)),
+                      labelText: 'Email',
+                      hintText: "Please enter your Email address",
+                      labelStyle: const TextStyle(
+                        color: primary,
+                        fontWeight: FontWeight.bold,
+                        fontSize: size_16,
+                      ),
+                      hintStyle: const TextStyle(
+                        color: Colors.black,
+                        fontWeight: FontWeight.normal,
+                        fontSize: size_12,
+                      ),
+                    ),
+                    onChanged: (value) {
+                      print(value);
+                    },
+                  ),
                 ),
-                hintStyle: const TextStyle(
-                  color: Colors.black,
-                  fontWeight: FontWeight.normal,
-                  fontSize: size_12,
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: size_30, vertical: size_6),
+                  child: TextFormField(
+                    textInputAction: TextInputAction.done,
+                    keyboardType: TextInputType.text,
+                    controller: passwordController,
+                    decoration: InputDecoration(
+                      border: OutlineInputBorder(
+                          borderSide: const BorderSide(
+                              width: 1,
+                              style: BorderStyle.solid,
+                              color: primary),
+                          borderRadius: BorderRadius.circular(size_7)),
+                      enabledBorder: OutlineInputBorder(
+                          borderSide: const BorderSide(
+                              width: 1,
+                              style: BorderStyle.solid,
+                              color: primary),
+                          borderRadius: BorderRadius.circular(size_7)),
+                      focusedBorder: OutlineInputBorder(
+                          borderSide: const BorderSide(
+                              width: 1,
+                              style: BorderStyle.solid,
+                              color: primary),
+                          borderRadius: BorderRadius.circular(size_7)),
+                      labelText: 'Password',
+                      hintText: "Please enter your Password",
+                      labelStyle: const TextStyle(
+                        color: primary,
+                        fontWeight: FontWeight.bold,
+                        fontSize: size_16,
+                      ),
+                      hintStyle: const TextStyle(
+                        color: Colors.black,
+                        fontWeight: FontWeight.normal,
+                        fontSize: size_12,
+                      ),
+                    ),
+                    onChanged: (value) {
+                      print(value);
+                    },
+                  ),
                 ),
-              ),
-              onChanged: (value) {
-                print(value);
-              },
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(
-                horizontal: size_30, vertical: size_6),
-            child: TextFormField(
-              textInputAction: TextInputAction.done,
-              keyboardType: TextInputType.text,
-              controller: passwordController,
-              decoration: InputDecoration(
-                border: OutlineInputBorder(
-                    borderSide: const BorderSide(
-                        width: 1, style: BorderStyle.solid, color: primary),
-                    borderRadius: BorderRadius.circular(size_7)),
-                enabledBorder: OutlineInputBorder(
-                    borderSide: const BorderSide(
-                        width: 1, style: BorderStyle.solid, color: primary),
-                    borderRadius: BorderRadius.circular(size_7)),
-                focusedBorder: OutlineInputBorder(
-                    borderSide: const BorderSide(
-                        width: 1, style: BorderStyle.solid, color: primary),
-                    borderRadius: BorderRadius.circular(size_7)),
-                labelText: 'Password',
-                hintText: "Please enter your Password",
-                labelStyle: const TextStyle(
-                  color: primary,
-                  fontWeight: FontWeight.bold,
-                  fontSize: size_16,
-                ),
-                hintStyle: const TextStyle(
-                  color: Colors.black,
-                  fontWeight: FontWeight.normal,
-                  fontSize: size_12,
-                ),
-              ),
-              onChanged: (value) {
-                print(value);
-              },
+              ],
             ),
           ),
           Padding(
