@@ -1,12 +1,10 @@
 import 'package:document_verification_system/constants/colors.dart';
 import 'package:document_verification_system/constants/size.dart';
-import 'package:document_verification_system/functions/camera.dart';
+import 'package:document_verification_system/functions/supabase.dart';
 import 'package:document_verification_system/screens/settings_page.dart';
-import 'package:document_verification_system/screens/upload_screen.dart';
 import 'package:document_verification_system/widgets/dashboard_card.dart';
 import 'package:document_verification_system/widgets/enter_code.dart';
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
 
 class Dashboard extends StatefulWidget {
   const Dashboard({Key? key}) : super(key: key);
@@ -16,9 +14,21 @@ class Dashboard extends StatefulWidget {
 }
 
 class _DashboardState extends State<Dashboard> {
+  dynamic listofUserDocuments = {};
+
+  documentData() async {
+    await getAllDocumentsByUserId('1').then((value) => setState(
+          () {
+            listofUserDocuments = value;
+            print(value);
+          },
+        ));
+  }
+
   @override
   void initState() {
     super.initState();
+    documentData();
   }
 
   @override
@@ -98,10 +108,10 @@ class _DashboardState extends State<Dashboard> {
             child: ListView.builder(
               padding: EdgeInsets.only(bottom: screenHeight(context) * 0.14),
               shrinkWrap: true,
-              itemCount: fileName.length,
+              itemCount: listofUserDocuments.length,
               itemBuilder: ((context, index) {
                 return DashboardCard(
-                  fileName: fileName[index],
+                  fileName: listofUserDocuments[index]['file_name'],
                 );
               }),
             ),
@@ -115,7 +125,7 @@ class _DashboardState extends State<Dashboard> {
           Container(
             decoration: const BoxDecoration(
               color: base,
-              borderRadius:  BorderRadius.only(
+              borderRadius: BorderRadius.only(
                 topLeft: Radius.circular(size_50),
                 topRight: Radius.circular(size_50),
               ),

@@ -88,3 +88,4 @@ __pycache__
 /*.png
 /python/*.jpg
 /python/*.png
+/node/node_modules
