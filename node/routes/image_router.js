@@ -1,5 +1,6 @@
 const express = require('express')
 const router = express.Router()
+const multer =require('multer')
 
 //acquiring image model
 
@@ -19,30 +20,12 @@ router.get('/getImage',async(req, res)=>{
     }
 })
 
-//api to post images
-
-router.post('/postImage',async(req, res)=>{
-    const addImage = new Image({
-        imageId:req.body.imageId,
-        imageName:req.body.imageName,
-        imageUrl:req.body.imageUrl,
-        userId:req.body.userId,
-        requestedById:req.body.requestedById
-    })
-    try {
-        const newImage= await addImage.save();
-        res.status(201).json({ image: newImage})
-    } catch (error) {
-        res.status(400).json({message: error.message })
-    }
-})
-
 //api to get image by id (userid)
 
-router.get('/getImagebyid/:id',async(req, res)=>{
+router.get('/getImagebyId/:id',async(req, res)=>{
     try {
         const userid = await Image.findOne({userId:req.params.id})
-        res.status(201).json({userId:userid.userId})
+        res.status(201).json({userId:userid})
         
     } catch (error) {
         return res.status(500).json({message:error.message})
@@ -50,4 +33,51 @@ router.get('/getImagebyid/:id',async(req, res)=>{
 })
 
 //api to get image by id (imageid)
+router.get('/getImagebyUserId/:id',async(req, res)=>{
+    try {
+        const imageid = await Image.findOne({imageId:req.params.id})
+        res.status(201).json({imageId:imageid})
+        
+    } catch (error) {
+        return res.status(500).json({message:error.message})
+    }
+})
+
+// diskstorage
+const Storage = multer.diskStorage({
+    destination:'uploads', 
+    filename:  (req, file, cb) =>{
+      cb(null, file.originalname)
+    }
+  })
+  
+const upload = multer({ 
+     storage: Storage 
+}).single('testImage')
+
+
+//api to post image details to mongo and add image to 'uploads' folder
+router.post('/postImage',async(req, res)=>{
+    upload(req,res,(err)=>{
+        if (err){
+            console.log(err)
+        }
+       else{
+            const addImage = new Image({
+            imageId:req.body.imageId,
+            imageName:req.body.imageName,
+            imagDoc:{
+                data: req.file.filename,
+                contentType: 'image/jpg'
+            },
+            userId:req.body.userId,
+            requestedById:req.body.requestedById
+        })
+       
+       addImage.save()
+       .then(()=>res.send('sucessfully uploaded'))
+       .catch(err=>console.log(err))
+    }}
+)
+})
 

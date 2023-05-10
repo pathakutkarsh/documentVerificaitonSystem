@@ -29,6 +29,10 @@ if (process.env.NODE_ENV === 'development') {
 app.use('/api/image', imageRouter)
 app.use('/api/user',userRouter)
 
+//get static files theough node
+app.use(express.static('public'))
+app.use('/images',express.static('uploads'))
+
 //port 4000 used
 const PORT = 4000
 

@@ -11,9 +11,9 @@ const imageschema = new mongoose.Schema({
         required: true
 
     },
-    imageUrl:{
-        type: String,
-        required: true
+    imageDoc:{
+        type: Buffer,
+        contentType: String
 
     },
     userId:{
