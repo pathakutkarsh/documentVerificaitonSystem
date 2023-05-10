@@ -1,38 +1,22 @@
 import 'package:document_verification_system/constants/colors.dart';
 import 'package:document_verification_system/constants/size.dart';
-import 'package:document_verification_system/functions/camera.dart';
-import 'package:document_verification_system/functions/supabase.dart';
 import 'package:document_verification_system/screens/settings_page.dart';
-import 'package:document_verification_system/screens/upload_screen.dart';
 import 'package:document_verification_system/widgets/dashboard_card.dart';
-import 'package:document_verification_system/widgets/enter_code.dart';
+import 'package:document_verification_system/widgets/select_document.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
 
-class Dashboard extends StatefulWidget {
-  const Dashboard({Key? key}) : super(key: key);
+class RequestDocument extends StatefulWidget {
+  const RequestDocument({Key? key}) : super(key: key);
 
   @override
-  State<Dashboard> createState() => _DashboardState();
+  State<RequestDocument> createState() => _RequestDocumentState();
 }
 
-class _DashboardState extends State<Dashboard> {
-  dynamic listofUserDocuments = {};
-
-  documentData() async {
-    await getAllDocumentsByUserId('1').then((value) => setState(
-          () {
-            listofUserDocuments = value;
-            print(value);
-          },
-        ));
-  }
-
+class _RequestDocumentState extends State<RequestDocument> {
   @override
   void initState() {
     super.initState();
-    documentData();
   }
 
   @override
@@ -117,10 +101,10 @@ class _DashboardState extends State<Dashboard> {
                       bottom: screenHeight(context) * 0.14)
                   : EdgeInsets.only(bottom: screenHeight(context) * 0.14),
               shrinkWrap: true,
-              itemCount: listofUserDocuments.length,
+              itemCount: fileName.length,
               itemBuilder: ((context, index) {
                 return DashboardCard(
-                  fileName: listofUserDocuments[index]['file_name'],
+                  fileName: fileName[index],
                 );
               }),
             ),
@@ -155,37 +139,22 @@ class _DashboardState extends State<Dashboard> {
               ),
               Positioned(
                 bottom: screenHeight(context) * 0.09,
-                child: InkWell(
-                  onTap: () {
+                child: ElevatedButton.icon(
+                  style: ElevatedButton.styleFrom(
+                    maximumSize: const Size(size_200, size_200),
+                    minimumSize: const Size(size_60, size_60),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(size_10)),
+                  ),
+                  onPressed: () {
                     showDialog(
                         context: context,
                         builder: (context) {
-                          return const EnterCodeDialog();
+                          return SelectDocument();
                         });
-                    // pickImageFromCamera()
-                    //     .then((value) => print(value!.path))
-                    //     .whenComplete(() => print("Image completed"));
                   },
-                  child: Container(
-                    width: size_80,
-                    height: size_80,
-                    decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: primary,
-                        boxShadow: [
-                          BoxShadow(
-                            offset: const Offset(size_5, size_5),
-                            color: primary.withOpacity(0.4),
-                            spreadRadius: size_1,
-                            blurRadius: size_15,
-                          )
-                        ]),
-                    child: const Icon(
-                      Icons.add,
-                      size: size_50,
-                      color: base,
-                    ),
-                  ),
+                  icon: const Icon(Icons.add),
+                  label: const Text("Create New Request"),
                 ),
               ),
             ],

@@ -20,6 +20,7 @@ class _DocumentDetailsState extends State<DocumentDetails> {
     super.initState();
   }
 
+// need to use image.network for browser viewing image
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -80,8 +81,16 @@ class _DocumentDetailsState extends State<DocumentDetails> {
                         barrierLabel: MaterialLocalizations.of(context)
                             .modalBarrierDismissLabel,
                         builder: (builder) {
-                          return Image.asset(
-                            "lib/assets/icons/sampleImage.png",
+                          return Material(
+                            color: Colors.transparent,
+                            child: InkWell(
+                              onTap: () {
+                                Navigator.pop(context);
+                              },
+                              child: Image.asset(
+                                "lib/assets/icons/sampleImage.png",
+                              ),
+                            ),
                           );
                         });
                   },
