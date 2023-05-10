@@ -1,5 +1,5 @@
 import 'package:document_verification_system/constants/colors.dart';
-import 'package:document_verification_system/screens/signup_screen.dart';
+import 'package:document_verification_system/screens/request_documents.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -17,6 +17,6 @@ class MyApp extends StatelessWidget {
         theme: ThemeData(
             colorScheme: ColorScheme.fromSwatch()
                 .copyWith(primary: primary, secondary: base)),
-        home: const SignupScreen());
+        home: const RequestDocument());
   }
 }

@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:document_verification_system/constants/colors.dart';
 import 'package:document_verification_system/constants/size.dart';
 import 'package:document_verification_system/widgets/enter_code.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -14,10 +15,7 @@ class UploadScreen extends StatefulWidget {
   State<UploadScreen> createState() => _UploadScreen();
 }
 
-class _UploadScreen extends State<UploadScreen>
-    with SingleTickerProviderStateMixin {
-  late AnimationController _animationController;
-  late Animation iconColor;
+class _UploadScreen extends State<UploadScreen> {
   @override
   void initState() {
     super.initState();
@@ -28,7 +26,6 @@ class _UploadScreen extends State<UploadScreen>
 
   @override
   void dispose() {
-    _animationController.dispose();
     super.dispose();
   }
 
@@ -62,10 +59,15 @@ class _UploadScreen extends State<UploadScreen>
                   borderRadius: BorderRadius.circular(10),
                 ),
                 clipBehavior: Clip.hardEdge,
-                child: Image.file(
-                  File(widget.imageList[0].path),
-                  fit: BoxFit.fill,
-                ),
+                child: kIsWeb
+                    ? Image.network(
+                        widget.imageList[0].path,
+                        fit: BoxFit.fill,
+                      )
+                    : Image.file(
+                        File(widget.imageList[0].path),
+                        fit: BoxFit.fill,
+                      ),
               ),
             ),
             const SizedBox(
