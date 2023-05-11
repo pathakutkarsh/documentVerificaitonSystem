@@ -28,8 +28,9 @@ if __name__ == '__main__':
         print("Please enter image path")
     else:
         for numberOfArgument in range(1,len(sys.argv)):
-            fileName=''.join(random.choices(string.ascii_uppercase +
-                                string.digits, k=10))+'.png'
+            fileName="test.png"
+            #fileName=''.join(random.choices(string.ascii_uppercase +
+                                #string.digits, k=10))+'.png'
             outputImage=main(sys.argv[numberOfArgument])
             if outputImage is None:
                 print("False")
@@ -37,4 +38,5 @@ if __name__ == '__main__':
                 cv2.imwrite(fileName,outputImage)
                 print(fileName)
                 imageSplicing(os.path.abspath(fileName))
-                Validation(imageFilePath=os.path.abspath(fileName))
+        Validation(imageFilePath=sys.argv[numberOfArgument])
+                #Validation(imageFilePath=os.path.abspath(fileName))
