@@ -12,7 +12,7 @@ def scan(inputImage,resizeLimit=1080,morphologyIteration=6, cannyUpperThreshold=
     # Copy of resized original image for later use
     resizedInputImageCopy = inputImage.copy()
     # Repeated Closing operation to remove text from the document.
-    cv2.imwrite("scale.png", inputImage)
+    # cv2.imwrite("scale.png", inputImage)
     kernel = np.ones((5, 5), np.uint8)
     inputImage = cv2.morphologyEx(inputImage, cv2.MORPH_CLOSE, kernel, iterations=morphologyIteration)
     # cv2.imwrite("Morphology.png", inputImage)
@@ -32,7 +32,7 @@ def scan(inputImage,resizeLimit=1080,morphologyIteration=6, cannyUpperThreshold=
     # Edge Detection.
     canny = cv2.Canny(gray, 0, cannyUpperThreshold)
     canny = cv2.dilate(canny, cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (5, 5)))
-    cv2.imwrite("canny.png", canny)
+    # cv2.imwrite("canny.png", canny)
     # Finding contours for the detected edges.
     contours, hierarchy = cv2.findContours(canny, cv2.RETR_LIST, cv2.CHAIN_APPROX_NONE)
     # Keeping only the largest detected contour.

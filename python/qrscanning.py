@@ -6,6 +6,7 @@ import pyzbar.pyzbar as pyzbar
 from PIL import Image as im
 # OPTICAL CHARACTER RECOGNITION
 def OCR(image):
+  pytesseract.pytesseract.tesseract_cmd = 'C:\\Program Files\\Tesseract-OCR\\tesseract.exe'
   extractedInformation = pytesseract.image_to_string(image)
   return extractedInformation
 
@@ -73,9 +74,9 @@ def Validation(imageFilePath):
   #print(x)
   #print(len(x))
   if len(x)>3:
-    print("NOT VALIDATED")
+    return False
   else:
-    print("Document Validated")
+    return True
 
 # Validation("/mnt/d/Projects/DocumentVerificationSystem/sample12e.jpg")
 

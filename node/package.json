@@ -1,7 +1,14 @@
 {
 
   "type": "module",
+
   "dependencies": {
-    "@supabase/supabase-js": "^2.21.0"
+
+    "@supabase/supabase-js": "^2.21.0",
+
+    "child_process": "^1.0.2"
+
   }
+
 }
+
