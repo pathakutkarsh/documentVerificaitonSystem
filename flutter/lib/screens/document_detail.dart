@@ -113,7 +113,11 @@ class _DocumentDetailsState extends State<DocumentDetails> {
                                   ? Image.memory(
                                       uploadFile,
                                     )
-                                  : const CircularProgressIndicator(),
+                                  : const SizedBox(
+                                      width: size_10,
+                                      height: size_10,
+                                      child: CircularProgressIndicator(),
+                                    ),
                             ),
                           );
                         });

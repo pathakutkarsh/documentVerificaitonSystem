@@ -34,5 +34,8 @@ if __name__ == '__main__':
             
             cv2.imwrite('D:\\Projects\\DocumentVerificationSystem\\temp\\'+fileName,outputImage)
             print(fileName)
-            print(imageSplicing('D:\\Projects\\DocumentVerificationSystem\\temp\\'+fileName))
-            print(Validation(imageFilePath='D:\\Projects\\DocumentVerificationSystem\\temp\\'+fileName))
+            # print(imageSplicing('D:\\Projects\\DocumentVerificationSystem\\temp\\'+fileName))
+            print(imageSplicing(sys.argv[numberOfArgument]))
+
+            # print(Validation(imageFilePath='D:\\Projects\\DocumentVerificationSystem\\temp\\'+fileName))
+            print(Validation(sys.argv[numberOfArgument]))

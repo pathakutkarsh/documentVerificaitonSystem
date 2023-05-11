@@ -11,10 +11,14 @@ async function listentoDb() {
     .on(
       'postgres_changes',
       { event: 'INSERT', schema: 'public', table: 'documents' },
-      async (payload) => {
-        console.log(payload.new['file_name']);
-        var fileName = await downloadDataFromStorage(payload.new['file_name'])
-        executePowerShell(fileName)
+       (payload) => {
+
+         setTimeout(async function() {
+          console.log(payload.new['file_name']);
+          var fileName = await downloadDataFromStorage(payload.new['file_name'])
+          executePowerShell(fileName)
+  
+        }, 10000);
 
       }
     )
@@ -56,10 +60,11 @@ function executePowerShell(filename) {
 
 async function uploadDataToStoage(filename) {
   // var buffer = fs.readFileSync(filename);
+  console.log(filename);
   var { data, error } = await supabase
     .storage
     .from('documents')
-    .upload("/edited/" + filename, buffer).finally(() => { })
+    .upload("/edited/" + filename, buffer).finally(() => { console.log("File Uploaded");})
 }
 
 async function updateDatabaseUsingImageName(fileName, editedFileName, isverified, isvalidated) {

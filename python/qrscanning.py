@@ -73,7 +73,7 @@ def Validation(imageFilePath):
     flag=0
   #print(x)
   #print(len(x))
-  if len(x)>3:
+  if len(x)>4:
     return False
   else:
     return True

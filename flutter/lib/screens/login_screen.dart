@@ -1,6 +1,7 @@
 import 'package:document_verification_system/constants/colors.dart';
 import 'package:document_verification_system/constants/size.dart';
 import 'package:document_verification_system/screens/dashboard.dart';
+import 'package:document_verification_system/screens/request_documents.dart';
 import 'package:document_verification_system/screens/signup_screen.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -171,7 +172,8 @@ class _LoginScreenState extends State<LoginScreen> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => const Dashboard(),
+                    builder: (context) => RequestDocument(
+                        requestDocument: passwordController.value.toString()),
                   ),
                 );
               },

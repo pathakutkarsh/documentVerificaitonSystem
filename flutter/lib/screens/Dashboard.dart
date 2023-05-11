@@ -19,11 +19,13 @@ class Dashboard extends StatefulWidget {
 
 class _DashboardState extends State<Dashboard> {
   dynamic listofUserDocuments = {};
+  bool isDataLoaded = false;
 
   documentData() async {
     await getAllDocumentsByUserId('1').then((value) => setState(
           () {
             listofUserDocuments = value;
+            isDataLoaded = true;
             print(value);
           },
         ));
@@ -108,24 +110,33 @@ class _DashboardState extends State<Dashboard> {
               ),
             ),
           ),
-          Expanded(
-            child: ListView.builder(
-              padding: kIsWeb
-                  ? EdgeInsets.only(
-                      left: screenWidth(context) * 0.3,
-                      right: screenWidth(context) * 0.3,
-                      bottom: screenHeight(context) * 0.14)
-                  : EdgeInsets.only(bottom: screenHeight(context) * 0.14),
-              shrinkWrap: true,
-              itemCount: listofUserDocuments.length,
-              itemBuilder: ((context, index) {
-                return DashboardCard(
-                  fileName: listofUserDocuments[index]['file_type'],
-                  imageInfo: listofUserDocuments[index],
-                );
-              }),
-            ),
-          ),
+          isDataLoaded
+              ? Expanded(
+                  child: RefreshIndicator(
+                  onRefresh: () async {
+                    setState(() {
+                      isDataLoaded = false;
+                    });
+                    await documentData();
+                  },
+                  child: ListView.builder(
+                    padding: kIsWeb
+                        ? EdgeInsets.only(
+                            left: screenWidth(context) * 0.3,
+                            right: screenWidth(context) * 0.3,
+                            bottom: screenHeight(context) * 0.14)
+                        : EdgeInsets.only(bottom: screenHeight(context) * 0.14),
+                    shrinkWrap: true,
+                    itemCount: listofUserDocuments.length,
+                    itemBuilder: ((context, index) {
+                      return DashboardCard(
+                        fileName: listofUserDocuments[index]['file_type'],
+                        imageInfo: listofUserDocuments[index],
+                      );
+                    }),
+                  ),
+                ))
+              : const Center(child: CircularProgressIndicator()),
         ],
       ),
       bottomSheet: SingleChildScrollView(

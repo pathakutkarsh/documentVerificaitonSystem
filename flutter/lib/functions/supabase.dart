@@ -55,3 +55,9 @@ uploadImageToBucket(String filePath, fileName) async {
       .upload('/uploaded/$fileName', File(filePath));
   print(output);
 }
+
+Future<List> getAllDocumentsByRequesterID(String userId) async {
+  final data =
+      await supabase.from('documents').select('*').eq("requested_by", userId);
+  return data;
+}

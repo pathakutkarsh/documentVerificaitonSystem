@@ -13,14 +13,78 @@ class RequiredDocumentList extends StatefulWidget {
 }
 
 class RequiredDocumentListState extends State<RequiredDocumentList> {
+  bool isDetailLoaded = false;
   Map getRequiredDocumentDetails = {};
   getRequiredDocuments() async {
-    await getListofRequestedDocumentsFromID(widget.requestID)
-        .then((value) => setState(
-              () {
-                getRequiredDocumentDetails = value;
-              },
-            ));
+    await getListofRequestedDocumentsFromID(widget.requestID).then(
+      (value) => setState(
+        () {
+          getRequiredDocumentDetails = value;
+          createCardsBasedOnRequiredDocuments();
+          isDetailLoaded = true;
+        },
+      ),
+    );
+  }
+
+  List<Widget> documentType = [];
+
+  createCardsBasedOnRequiredDocuments() {
+    if (getRequiredDocumentDetails['request_hsc']) {
+      documentType.add(
+        Padding(
+          padding: kIsWeb
+              ? EdgeInsets.only(
+                  left: screenWidth(context) * 0.3,
+                  right: screenWidth(context) * 0.3,
+                  bottom: screenHeight(context) * 0.5,
+                )
+              : EdgeInsets.only(bottom: screenHeight(context) * 0.0),
+          child: DashboardCard(
+            fileName: "HSC Marksheet",
+            imageUrl: "lib/assets/icons/uploadicon.png",
+            requestId: widget.requestID,
+            uploadFile: true,
+          ),
+        ),
+      );
+    }
+    if (getRequiredDocumentDetails['request_aadhar']) {
+      documentType.add(
+        Padding(
+          padding: kIsWeb
+              ? EdgeInsets.only(
+                  left: screenWidth(context) * 0.3,
+                  right: screenWidth(context) * 0.3,
+                  bottom: screenHeight(context) * 0.5)
+              : EdgeInsets.only(bottom: screenHeight(context) * 0.0),
+          child: DashboardCard(
+            fileName: "Aadhar Card",
+            imageUrl: "lib/assets/icons/uploadicon.png",
+            requestId: widget.requestID,
+            uploadFile: true,
+          ),
+        ),
+      );
+    }
+    if (getRequiredDocumentDetails['request_ssc']) {
+      documentType.add(
+        Padding(
+          padding: kIsWeb
+              ? EdgeInsets.only(
+                  left: screenWidth(context) * 0.3,
+                  right: screenWidth(context) * 0.3,
+                  bottom: screenHeight(context) * 0.5)
+              : EdgeInsets.only(bottom: screenHeight(context) * 0.0),
+          child: DashboardCard(
+            fileName: "SSC Marksheet",
+            imageUrl: "lib/assets/icons/uploadicon.png",
+            requestId: widget.requestID,
+            uploadFile: true,
+          ),
+        ),
+      );
+    }
   }
 
   @override
@@ -38,89 +102,48 @@ class RequiredDocumentListState extends State<RequiredDocumentList> {
         shadowColor: Colors.transparent,
         primary: true,
       ),
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: [
-          ClipRRect(
-            clipBehavior: Clip.antiAliasWithSaveLayer,
-            borderRadius: const BorderRadius.only(
-              bottomRight: Radius.circular(size_100),
-            ),
-            child: Container(
-              color: primary,
-              height: screenHeight(context) * 0.175,
-              width: screenWidth(context),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.end,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: const [
-                  Padding(
-                    padding: EdgeInsets.all(size_12),
-                    child: Text(
-                      "List of Document",
-                      style: TextStyle(
-                          fontSize: size_40,
-                          color: base,
-                          backgroundColor: Colors.transparent),
-                      overflow: TextOverflow.ellipsis,
+      body: isDetailLoaded
+          ? Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                ClipRRect(
+                  clipBehavior: Clip.antiAliasWithSaveLayer,
+                  borderRadius: const BorderRadius.only(
+                    bottomRight: Radius.circular(size_100),
+                  ),
+                  child: Container(
+                    color: primary,
+                    height: screenHeight(context) * 0.175,
+                    width: screenWidth(context),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: const [
+                        Padding(
+                          padding: EdgeInsets.all(size_12),
+                          child: Text(
+                            "List of Document",
+                            style: TextStyle(
+                                fontSize: size_40,
+                                color: base,
+                                backgroundColor: Colors.transparent),
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
-                ],
-              ),
-            ),
-          ),
-          getRequiredDocumentDetails['request_aadhar']
-              ? Padding(
-                  padding: kIsWeb
-                      ? EdgeInsets.only(
-                          left: screenWidth(context) * 0.3,
-                          right: screenWidth(context) * 0.3,
-                          bottom: screenHeight(context) * 0.14)
-                      : EdgeInsets.only(bottom: screenHeight(context) * 0.14),
-                  child: DashboardCard(
-                    fileName: "Aadhar Card",
-                    imageUrl: "lib/assets/icons/uploadicon.png",
-                    requestId: widget.requestID,
-                    uploadFile: true,
-                  ),
-                )
-              : Container(),
-          getRequiredDocumentDetails['request_hsc']
-              ? Padding(
-                  padding: kIsWeb
-                      ? EdgeInsets.only(
-                          left: screenWidth(context) * 0.3,
-                          right: screenWidth(context) * 0.3,
-                          bottom: screenHeight(context) * 0.14)
-                      : EdgeInsets.only(bottom: screenHeight(context) * 0.14),
-                  child: DashboardCard(
-                    fileName: "HSC Marksheet",
-                    imageUrl: "lib/assets/icons/uploadicon.png",
-                    requestId: widget.requestID,
-                    uploadFile: true,
-                  ),
-                )
-              : Container(
-                  height: 0,
                 ),
-          getRequiredDocumentDetails['request_ssc']
-              ? Padding(
-                  padding: kIsWeb
-                      ? EdgeInsets.only(
-                          left: screenWidth(context) * 0.3,
-                          right: screenWidth(context) * 0.3,
-                          bottom: screenHeight(context) * 0.14)
-                      : EdgeInsets.only(bottom: screenHeight(context) * 0.14),
-                  child: DashboardCard(
-                    fileName: "SSC Marksheet",
-                    imageUrl: "lib/assets/icons/uploadicon.png",
-                    requestId: widget.requestID,
-                    uploadFile: true,
-                  ),
-                )
-              : Container(),
-        ],
-      ),
+                Expanded(
+                    child: ListView(
+                  shrinkWrap: true,
+                  children: documentType,
+                )),
+              ],
+            )
+          : const Center(
+              child: CircularProgressIndicator(),
+            ),
     );
   }
 }
