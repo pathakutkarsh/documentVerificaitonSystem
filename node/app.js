@@ -5,7 +5,7 @@ import fs from 'fs'
 // Create a single supabase client for interacting with your database
 const supabase = createClient('https://mjhtcnoxatlhfnduhupy.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1qaHRjbm94YXRsaGZuZHVodXB5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE2ODM3NDMyNzAsImV4cCI6MTk5OTMxOTI3MH0.YdHD5jmJI4-cvAYt5pl5i5PomYy9YyPog69t7c_zDi0')
 
-
+var buffer;
 async function listentoDb() {
   const documents = supabase.channel('custom-insert-channel')
     .on(
@@ -30,7 +30,7 @@ async function downloadDataFromStorage(filename) {
     .from('documents')
     .download("/uploaded/" + filename)
   const blob = data;
-  const buffer = Buffer.from(await blob.arrayBuffer());
+    buffer = Buffer.from(await blob.arrayBuffer());
   var file = await fs.promises.writeFile('D:\\Projects\\DocumentVerificationSystem\\temp\\' + filename, buffer).then(console.log("file Saved"));
   return filename
 }
@@ -40,8 +40,8 @@ function executePowerShell(filename) {
   child.stdout.on("data", function (data) {
     // console.log("Powershell Data: " + data);
     var splitdata = String(data).split('\n')
-    uploadDataToStoage(splitdata[0]).finally(() => {
-      updateDatabaseUsingImageName(filename,splitdata[0],splitdata[1],splitdata[2])
+    uploadDataToStoage(splitdata[0].trim()).finally(() => {
+      updateDatabaseUsingImageName(filename,splitdata[0].trim(),splitdata[1].trim(),splitdata[2].trim())
     })
   });
   child.stderr.on("data", function (data) {
@@ -55,10 +55,11 @@ function executePowerShell(filename) {
 
 
 async function uploadDataToStoage(filename) {
+  // var buffer = fs.readFileSync(filename);
   var { data, error } = await supabase
     .storage
     .from('documents')
-    .upload("/edited/" + filename, 'D:\\Projects\\DocumentVerificationSystem\\temp\\' + filename).finally(() => { })
+    .upload("/edited/" + filename, buffer).finally(() => { })
 }
 
 async function updateDatabaseUsingImageName(fileName, editedFileName, isverified, isvalidated) {

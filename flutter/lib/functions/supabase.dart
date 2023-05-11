@@ -12,8 +12,9 @@ Future<List> getAllDocumentsByUserId(String userId) async {
 }
 
 Future<Uint8List> downloadImageFromFileName(String fileName) async {
+  String filepath = "/edited/" + fileName.trim();
   final Uint8List file =
-      await supabase.storage.from('documents/uploaded').download(fileName);
+      await supabase.storage.from('documents').download(filepath);
   return file;
 }
 
