@@ -1,5 +1,4 @@
 import 'package:document_verification_system/constants/colors.dart';
-import 'package:document_verification_system/screens/request_documents.dart';
 import 'package:document_verification_system/screens/signup_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';

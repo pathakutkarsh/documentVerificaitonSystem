@@ -7,7 +7,10 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
 class SelectUploadMethod extends StatelessWidget {
-  const SelectUploadMethod({super.key});
+  final String documentType;
+  final requestedById;
+  const SelectUploadMethod(
+      {super.key, required this.requestedById, required this.documentType});
 
   @override
   Widget build(BuildContext context) {
@@ -40,6 +43,8 @@ class SelectUploadMethod extends StatelessWidget {
                                       MaterialPageRoute(
                                         builder: (context) => UploadScreen(
                                           imageList: pickedImageFromCamera,
+                                          requestedById: requestedById,
+                                          documentType: documentType,
                                         ),
                                       ),
                                     )
@@ -66,6 +71,8 @@ class SelectUploadMethod extends StatelessWidget {
                         MaterialPageRoute(
                           builder: (context) => UploadScreen(
                             imageList: pickedImageFromGallery,
+                            requestedById: requestedById,
+                            documentType: documentType,
                           ),
                         ),
                       )

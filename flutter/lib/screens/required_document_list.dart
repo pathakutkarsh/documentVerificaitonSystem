@@ -1,5 +1,6 @@
 import 'package:document_verification_system/constants/colors.dart';
 import 'package:document_verification_system/constants/size.dart';
+import 'package:document_verification_system/functions/supabase.dart';
 import 'package:document_verification_system/widgets/dashboard_card.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -12,10 +13,20 @@ class RequiredDocumentList extends StatefulWidget {
 }
 
 class RequiredDocumentListState extends State<RequiredDocumentList> {
+  Map getRequiredDocumentDetails = {};
+  getRequiredDocuments() async {
+    await getListofRequestedDocumentsFromID(widget.requestID)
+        .then((value) => setState(
+              () {
+                getRequiredDocumentDetails = value;
+              },
+            ));
+  }
+
   @override
   void initState() {
-    // TODO:getList of Documents from requestedID
     super.initState();
+    getRequiredDocuments();
   }
 
   List<String> fileName = ["Aadhar Card", "HSC Result"];
@@ -28,7 +39,7 @@ class RequiredDocumentListState extends State<RequiredDocumentList> {
         primary: true,
       ),
       body: Column(
-        // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        mainAxisAlignment: MainAxisAlignment.start,
         children: [
           ClipRRect(
             clipBehavior: Clip.antiAliasWithSaveLayer,
@@ -58,25 +69,56 @@ class RequiredDocumentListState extends State<RequiredDocumentList> {
               ),
             ),
           ),
-          Expanded(
-            child: ListView.builder(
-              padding: kIsWeb
-                  ? EdgeInsets.only(
-                      left: screenWidth(context) * 0.3,
-                      right: screenWidth(context) * 0.3,
-                      bottom: screenHeight(context) * 0.14)
-                  : EdgeInsets.only(bottom: screenHeight(context) * 0.14),
-              shrinkWrap: true,
-              itemCount: fileName.length,
-              itemBuilder: ((context, index) {
-                return DashboardCard(
-                  fileName: fileName[index],
-                  imageUrl: "lib/assets/icons/uploadicon.png",
-                  uploadFile: true,
-                );
-              }),
-            ),
-          ),
+          getRequiredDocumentDetails['request_aadhar']
+              ? Padding(
+                  padding: kIsWeb
+                      ? EdgeInsets.only(
+                          left: screenWidth(context) * 0.3,
+                          right: screenWidth(context) * 0.3,
+                          bottom: screenHeight(context) * 0.14)
+                      : EdgeInsets.only(bottom: screenHeight(context) * 0.14),
+                  child: DashboardCard(
+                    fileName: "Aadhar Card",
+                    imageUrl: "lib/assets/icons/uploadicon.png",
+                    requestId: widget.requestID,
+                    uploadFile: true,
+                  ),
+                )
+              : Container(),
+          getRequiredDocumentDetails['request_hsc']
+              ? Padding(
+                  padding: kIsWeb
+                      ? EdgeInsets.only(
+                          left: screenWidth(context) * 0.3,
+                          right: screenWidth(context) * 0.3,
+                          bottom: screenHeight(context) * 0.14)
+                      : EdgeInsets.only(bottom: screenHeight(context) * 0.14),
+                  child: DashboardCard(
+                    fileName: "HSC Marksheet",
+                    imageUrl: "lib/assets/icons/uploadicon.png",
+                    requestId: widget.requestID,
+                    uploadFile: true,
+                  ),
+                )
+              : Container(
+                  height: 0,
+                ),
+          getRequiredDocumentDetails['request_ssc']
+              ? Padding(
+                  padding: kIsWeb
+                      ? EdgeInsets.only(
+                          left: screenWidth(context) * 0.3,
+                          right: screenWidth(context) * 0.3,
+                          bottom: screenHeight(context) * 0.14)
+                      : EdgeInsets.only(bottom: screenHeight(context) * 0.14),
+                  child: DashboardCard(
+                    fileName: "SSC Marksheet",
+                    imageUrl: "lib/assets/icons/uploadicon.png",
+                    requestId: widget.requestID,
+                    uploadFile: true,
+                  ),
+                )
+              : Container(),
         ],
       ),
     );

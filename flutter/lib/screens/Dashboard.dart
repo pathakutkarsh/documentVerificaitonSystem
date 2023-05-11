@@ -120,7 +120,8 @@ class _DashboardState extends State<Dashboard> {
               itemCount: listofUserDocuments.length,
               itemBuilder: ((context, index) {
                 return DashboardCard(
-                  fileName: listofUserDocuments[index]['file_name'],
+                  fileName: listofUserDocuments[index]['file_type'],
+                  imageInfo: listofUserDocuments[index],
                 );
               }),
             ),

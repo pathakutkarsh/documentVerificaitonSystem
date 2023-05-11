@@ -13,6 +13,8 @@ class EnterCodeDialog extends StatefulWidget {
 class _EnterCodeDialogState extends State<EnterCodeDialog> {
   TextEditingController codeController = TextEditingController();
 
+  String enteredCodeIs = '';
+
   @override
   void dispose() {
     codeController.dispose();
@@ -72,6 +74,7 @@ class _EnterCodeDialogState extends State<EnterCodeDialog> {
                   ),
                 ),
                 onChanged: (value) {
+                  enteredCodeIs = value;
                   print(value);
                 },
               ),
@@ -81,8 +84,8 @@ class _EnterCodeDialogState extends State<EnterCodeDialog> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => const RequiredDocumentList(
-                      requestID: "adf",
+                    builder: (context) => RequiredDocumentList(
+                      requestID: enteredCodeIs,
                     ),
                   ),
                 );
