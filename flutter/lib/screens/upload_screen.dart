@@ -23,21 +23,29 @@ class UploadScreen extends StatefulWidget {
 }
 
 class _UploadScreen extends State<UploadScreen> {
+  bool fileUploaded = false;
   uploadFile() async {
     await uploadImageToBucket(
-        widget.imageList[0].path, widget.imageList[0].name);
+            widget.imageList[0].path, widget.imageList[0].name)
+        .whenComplete(() => {createEntry()});
   }
 
   createEntry() {
-    uploadNewDocument(widget.imageList[0].name, false, false, '1',
-        widget.requestedById, widget.documentType);
+    uploadNewDocument(widget.imageList[0].name, false, false, getUserId(),
+            widget.requestedById, widget.documentType)
+        .whenComplete(() => {
+              setState(
+                () {
+                  fileUploaded = true;
+                },
+              )
+            });
   }
 
   @override
   void initState() {
     super.initState();
     uploadFile();
-    createEntry();
   }
 
   @override
@@ -90,18 +98,28 @@ class _UploadScreen extends State<UploadScreen> {
             const SizedBox(
               height: size_30,
             ),
-            const Text(
-              "Hold up while we Upload your Data ",
-              softWrap: true,
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                color: Colors.black,
-                fontSize: size_20,
-              ),
-            ),
+            fileUploaded
+                ? const Text(
+                    "File Upload You can go back!",
+                    softWrap: true,
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontSize: size_20,
+                    ),
+                  )
+                : const Text(
+                    "Hold up while we Upload your Data ",
+                    softWrap: true,
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontSize: size_20,
+                    ),
+                  ),
             InkWell(
               onTap: () {
-                Navigator.pop(context);
+                Navigator.pushReplacementNamed(context, '/dashboard');
               },
               child: Container(
                 width: 240,

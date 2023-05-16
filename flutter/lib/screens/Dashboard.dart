@@ -1,14 +1,10 @@
 import 'package:document_verification_system/constants/colors.dart';
 import 'package:document_verification_system/constants/size.dart';
-import 'package:document_verification_system/functions/camera.dart';
 import 'package:document_verification_system/functions/supabase.dart';
-import 'package:document_verification_system/screens/settings_page.dart';
-import 'package:document_verification_system/screens/upload_screen.dart';
 import 'package:document_verification_system/widgets/dashboard_card.dart';
 import 'package:document_verification_system/widgets/enter_code.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
 
 class Dashboard extends StatefulWidget {
   const Dashboard({Key? key}) : super(key: key);
@@ -22,7 +18,7 @@ class _DashboardState extends State<Dashboard> {
   bool isDataLoaded = false;
 
   documentData() async {
-    await getAllDocumentsByUserId('1')
+    await getAllDocumentsByUserId(getUserId())
         .then((value) => setState(
               () {
                 listofUserDocuments = value;

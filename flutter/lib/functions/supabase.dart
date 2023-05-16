@@ -34,7 +34,7 @@ Future<Map> getListofRequestedDocumentsFromID(String id) async {
   return data[0];
 }
 
-uploadNewDocument(
+Future uploadNewDocument(
     fileName, isValidated, isVerified, userId, requestedById, fileType) async {
   await _supabase.from('documents').insert(
     {
@@ -50,11 +50,12 @@ uploadNewDocument(
   );
 }
 
-uploadImageToBucket(String filePath, fileName) async {
+Future<String> uploadImageToBucket(String filePath, fileName) async {
   dynamic output = await _supabase.storage
       .from('documents')
       .upload('/uploaded/$fileName', File(filePath));
-  print(output);
+  print("upload image output is as follows: $output");
+  return output;
 }
 
 Future<List> getAllDocumentsByRequesterID(String userId) async {
@@ -78,4 +79,8 @@ getUserSession() {
 
 Future logoutuser() {
   return _supabase.auth.signOut();
+}
+
+String getUserId() {
+  return _supabase.auth.currentUser!.id;
 }
