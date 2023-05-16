@@ -120,21 +120,12 @@ else:
     #ls.pop(0)
     #ls.pop(len(ls)-1)
     flag=0
-    for i in new:
-      for j in ls2:
-        if i==j:
-          flag=1
-          break
-      if(flag==0):
-        #print(i)
-        x.append(i)
-      flag=0
-    print(x)
-    #print(len(x))
-    if len(x)>2:
-      print("NOT VALIDATED")
-    else:
-      print("Document Validated")
+  #print(x)
+  #print(len(x))
+  if len(x)>4:
+    return False
+  else:
+    return True
 
 # Validation("/mnt/d/Projects/DocumentVerificationSystem/sample12e.jpg")
 

@@ -1,6 +1,7 @@
 import 'package:document_verification_system/constants/colors.dart';
 import 'package:document_verification_system/constants/size.dart';
 import 'package:document_verification_system/functions/camera.dart';
+import 'package:document_verification_system/functions/supabase.dart';
 import 'package:document_verification_system/screens/settings_page.dart';
 import 'package:document_verification_system/screens/upload_screen.dart';
 import 'package:document_verification_system/widgets/dashboard_card.dart';
@@ -17,9 +18,33 @@ class Dashboard extends StatefulWidget {
 }
 
 class _DashboardState extends State<Dashboard> {
+  dynamic listofUserDocuments = {};
+  bool isDataLoaded = false;
+
+  documentData() async {
+    await getAllDocumentsByUserId('1')
+        .then((value) => setState(
+              () {
+                listofUserDocuments = value;
+                isDataLoaded = true;
+                print(value);
+              },
+            ))
+        .onError(
+          (error, stackTrace) => showDialog(
+              context: context,
+              builder: (context) {
+                return AlertDialog(
+                  title: Text(error.toString()),
+                );
+              }),
+        );
+  }
+
   @override
   void initState() {
     super.initState();
+    documentData();
   }
 
   @override
@@ -46,17 +71,21 @@ class _DashboardState extends State<Dashboard> {
             // DrawerHeader(child: Text("Settings")),
             ListTile(
               contentPadding: const EdgeInsets.symmetric(horizontal: size_20),
+              trailing: const Icon(Icons.logout),
+              title: const Text("Log Out"),
+              onTap: () {
+                logoutuser().whenComplete(
+                    () => {Navigator.pushReplacementNamed(context, '/')});
+              },
+            ),
+            ListTile(
+              contentPadding: const EdgeInsets.symmetric(horizontal: size_20),
               trailing: const Icon(Icons.settings),
               title: const Text("Settings"),
               onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const SettingsPage(),
-                  ),
-                );
+                Navigator.pushReplacementNamed(context, '/settings');
               },
-            )
+            ),
           ],
         ),
       ),
@@ -95,23 +124,33 @@ class _DashboardState extends State<Dashboard> {
               ),
             ),
           ),
-          Expanded(
-            child: ListView.builder(
-              padding: kIsWeb
-                  ? EdgeInsets.only(
-                      left: screenWidth(context) * 0.3,
-                      right: screenWidth(context) * 0.3,
-                      bottom: screenHeight(context) * 0.14)
-                  : EdgeInsets.only(bottom: screenHeight(context) * 0.14),
-              shrinkWrap: true,
-              itemCount: fileName.length,
-              itemBuilder: ((context, index) {
-                return DashboardCard(
-                  fileName: fileName[index],
-                );
-              }),
-            ),
-          ),
+          isDataLoaded
+              ? Expanded(
+                  child: RefreshIndicator(
+                  onRefresh: () async {
+                    setState(() {
+                      isDataLoaded = false;
+                    });
+                    await documentData();
+                  },
+                  child: ListView.builder(
+                    padding: kIsWeb
+                        ? EdgeInsets.only(
+                            left: screenWidth(context) * 0.3,
+                            right: screenWidth(context) * 0.3,
+                            bottom: screenHeight(context) * 0.14)
+                        : EdgeInsets.only(bottom: screenHeight(context) * 0.14),
+                    shrinkWrap: true,
+                    itemCount: listofUserDocuments.length,
+                    itemBuilder: ((context, index) {
+                      return DashboardCard(
+                        fileName: listofUserDocuments[index]['file_type'],
+                        imageInfo: listofUserDocuments[index],
+                      );
+                    }),
+                  ),
+                ))
+              : const Center(child: CircularProgressIndicator()),
         ],
       ),
       bottomSheet: SingleChildScrollView(

@@ -1,18 +1,37 @@
+import 'dart:io';
+
 import 'package:document_verification_system/constants/colors.dart';
 import 'package:document_verification_system/constants/size.dart';
+import 'package:document_verification_system/functions/supabase.dart';
 import 'package:document_verification_system/screens/document_detail.dart';
 import 'package:document_verification_system/widgets/select_upload_method.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
-class DashboardCard extends StatelessWidget {
+class DashboardCard extends StatefulWidget {
   bool uploadFile = false;
   String fileName = '';
   String imageUrl = '';
-  DashboardCard(
-      {super.key,
-      this.uploadFile = false,
-      this.fileName = "FileName",
-      this.imageUrl = 'lib/assets/icons/uploadicon.png'});
+  String requestId = '';
+  Map imageInfo;
+  DashboardCard({
+    super.key,
+    this.uploadFile = false,
+    this.fileName = "FileName",
+    this.imageUrl = 'lib/assets/icons/uploadicon.png',
+    this.requestId = '',
+    this.imageInfo = const {},
+  });
+
+  @override
+  State<DashboardCard> createState() => _DashboardCardState();
+}
+
+class _DashboardCardState extends State<DashboardCard> {
+  @override
+  void initState() {
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -30,22 +49,28 @@ class DashboardCard extends StatelessWidget {
           ),
           style: ListTileStyle.drawer,
           tileColor: base,
-          leading: Image.asset(
-            imageUrl,
-            color: Colors.grey,
+          leading: SizedBox(
+            width: size_40,
+            height: size_40,
+            child: Image.asset(
+              'lib/assets/icons/documenticon.png',
+              color: Colors.black,
+            ),
           ),
-          title: Text(fileName),
+          title: Text(widget.fileName),
           trailing: const Icon(
             Icons.arrow_right_rounded,
             color: primary,
             size: size_30,
           ),
           onTap: () {
-            if (uploadFile) {
+            if (widget.uploadFile) {
               showModalBottomSheet(
                 context: context,
                 builder: (context) {
-                  return const SelectUploadMethod();
+                  return SelectUploadMethod(
+                      requestedById: widget.requestId,
+                      documentType: widget.fileName);
                 },
               );
             } else {
@@ -53,7 +78,10 @@ class DashboardCard extends StatelessWidget {
                 context,
                 MaterialPageRoute(
                     builder: (context) => DocumentDetails(
-                        documentName: fileName, documentID: 'ad')),
+                          documentName: widget.fileName,
+                          documentID: 'ad',
+                          imageInfo: widget.imageInfo,
+                        )),
               );
             }
           },

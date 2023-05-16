@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 import 'package:document_verification_system/constants/colors.dart';
 import 'package:document_verification_system/constants/size.dart';
+import 'package:document_verification_system/functions/supabase.dart';
 import 'package:document_verification_system/widgets/enter_code.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -9,19 +10,34 @@ import 'package:image_picker/image_picker.dart';
 
 class UploadScreen extends StatefulWidget {
   final List<XFile> imageList;
-  const UploadScreen({super.key, required this.imageList});
+  final requestedById;
+  final documentType;
+  const UploadScreen(
+      {super.key,
+      required this.imageList,
+      required this.requestedById,
+      required this.documentType});
 
   @override
   State<UploadScreen> createState() => _UploadScreen();
 }
 
 class _UploadScreen extends State<UploadScreen> {
+  uploadFile() async {
+    await uploadImageToBucket(
+        widget.imageList[0].path, widget.imageList[0].name);
+  }
+
+  createEntry() {
+    uploadNewDocument(widget.imageList[0].name, false, false, '1',
+        widget.requestedById, widget.documentType);
+  }
+
   @override
   void initState() {
     super.initState();
-    // getUploadedFile();
-    // uploadFilesHttpPostRequest();
-    // getUploadedFileById(id: "2");
+    uploadFile();
+    createEntry();
   }
 
   @override
@@ -31,6 +47,7 @@ class _UploadScreen extends State<UploadScreen> {
 
   @override
   Widget build(BuildContext context) {
+    print("Requested by id at upload screen is ${widget.requestedById}");
     return Scaffold(
       appBar: AppBar(
           shadowColor: Colors.transparent,

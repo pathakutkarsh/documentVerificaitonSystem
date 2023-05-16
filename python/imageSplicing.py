@@ -28,8 +28,8 @@ def imageSplicing(inputImagePath):
     is_spliced = mean_diff_mean > 5 or std_diff_mean > 5
     # Print the result
     if (is_spliced):
-        print('The image is Tampered')
+        return False
     else:
-        print('The image is not Tampered')
+        return True
 
 # imageSplicing("/mnt/d/Personal Projects/python/sample9E.png")

@@ -1,6 +1,7 @@
 import 'package:document_verification_system/constants/colors.dart';
 import 'package:document_verification_system/constants/size.dart';
 import 'package:document_verification_system/functions/generate_string.dart';
+import 'package:document_verification_system/functions/supabase.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -26,8 +27,8 @@ class _SelectDocumentState extends State<SelectDocument> {
   List<String> selectedDocuments = [];
   Map<String, bool> selectionList = {
     "Aadhar": false,
+    "HSC Marksheet": false,
     "SSC Marksheet": false,
-    "HSC Marksheet": false
   };
   @override
   Widget build(BuildContext context) {
@@ -144,6 +145,8 @@ class _SelectDocumentState extends State<SelectDocument> {
                                 selectedDocuments.isNotEmpty
                                     ? isDocumentSelected = true
                                     : isDocumentSelected = false;
+                                print(selectedDocuments);
+                                print(selectionList.values.elementAt(index));
                               },
                             );
                           },
@@ -159,17 +162,16 @@ class _SelectDocumentState extends State<SelectDocument> {
                       isDocumentSelected
                           ? {
                               generatedCode = getRandomString(6),
-                              isButtonSelected = true,
                             }
                           : null;
-                      // Navigator.push(
-                      //   context,
-                      //   MaterialPageRoute(
-                      //     builder: (context) => const RequiredDocumentList(
-                      //       requestID: "adf",
-                      //     ),
-                      //   ),
-                      // );
+                      createNewDocumentRequest(
+                        generatedCode,
+                        selectionList.values.elementAt(0),
+                        selectionList.values.elementAt(1),
+                        selectionList.values.elementAt(2),
+                      ).whenComplete(() => {
+                            isButtonSelected = true,
+                          });
                     },
                     child: Container(
                       width: 240,

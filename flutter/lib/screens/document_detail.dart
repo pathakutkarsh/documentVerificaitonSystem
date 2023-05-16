@@ -1,28 +1,50 @@
+import 'dart:typed_data';
+
 import 'package:document_verification_system/constants/colors.dart';
 import 'package:document_verification_system/constants/size.dart';
+import 'package:document_verification_system/functions/supabase.dart';
 import 'package:document_verification_system/widgets/verification_detail.dart';
 import 'package:flutter/material.dart';
 
 class DocumentDetails extends StatefulWidget {
   final String documentName;
   final String documentID;
+  final Map imageInfo;
   const DocumentDetails(
-      {super.key, required this.documentName, required this.documentID});
+      {super.key,
+      required this.documentName,
+      required this.documentID,
+      required this.imageInfo});
 
   @override
   State<DocumentDetails> createState() => _DocumentDetailsState();
 }
 
 class _DocumentDetailsState extends State<DocumentDetails> {
+  late Uint8List uploadFile;
+  bool isFileLoaded = false;
+  late DateTime createdOn;
+  getDownloadedFile() {
+    downloadImageFromFileName(widget.imageInfo['edited_image_name']).then(
+      (value) => setState(
+        () {
+          uploadFile = value;
+          isFileLoaded = true;
+        },
+      ),
+    );
+  }
+
   @override
   void initState() {
-    // TODO:Call getDocumentByID to get details
     super.initState();
+    getDownloadedFile();
   }
 
 // need to use image.network for browser viewing image
   @override
   Widget build(BuildContext context) {
+    createdOn = DateTime.parse(widget.imageInfo['created_at']);
     return Scaffold(
       appBar: AppBar(
         backgroundColor: primary,
@@ -48,7 +70,7 @@ class _DocumentDetailsState extends State<DocumentDetails> {
                   Padding(
                     padding: const EdgeInsets.all(size_12),
                     child: Text(
-                      widget.documentName,
+                      widget.imageInfo['file_type'],
                       style: const TextStyle(
                           fontSize: size_40,
                           color: base,
@@ -87,30 +109,50 @@ class _DocumentDetailsState extends State<DocumentDetails> {
                               onTap: () {
                                 Navigator.pop(context);
                               },
-                              child: Image.asset(
-                                "lib/assets/icons/sampleImage.png",
-                              ),
+                              child: isFileLoaded
+                                  ? Image.memory(
+                                      uploadFile,
+                                    )
+                                  : const SizedBox(
+                                      width: size_10,
+                                      height: size_10,
+                                      child: CircularProgressIndicator(),
+                                    ),
                             ),
                           );
                         });
                   },
-                  child: Image.asset(
-                    "lib/assets/icons/sampleImage.png",
-                    fit: BoxFit.scaleDown,
-                  ),
+                  child: isFileLoaded
+                      ? Image.memory(
+                          uploadFile,
+                          fit: BoxFit.scaleDown,
+                        )
+                      : const CircularProgressIndicator(),
                 ),
               ),
-              const Text("Requested by: Company Name")
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text("File Name: ${widget.imageInfo['file_name']}"),
+                  Text(
+                      "Created on: ${createdOn.day}-${createdOn.month}-${createdOn.year}"),
+                  Text("Requested by: ${widget.imageInfo['requested_by']}"),
+                ],
+              ),
             ],
           ),
-          VerificationDetails(
-            isVerified: true,
-            isValidation: false,
-          ),
-          VerificationDetails(
-            isVerified: false,
-            isValidation: true,
-          )
+          isFileLoaded
+              ? VerificationDetails(
+                  isVerified: widget.imageInfo['is_verified'],
+                  isValidation: false,
+                )
+              : const CircularProgressIndicator(),
+          isFileLoaded
+              ? VerificationDetails(
+                  isVerified: widget.imageInfo['is_validated'],
+                  isValidation: true,
+                )
+              : const CircularProgressIndicator(),
         ],
       ),
     );

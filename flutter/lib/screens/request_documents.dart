@@ -1,5 +1,6 @@
 import 'package:document_verification_system/constants/colors.dart';
 import 'package:document_verification_system/constants/size.dart';
+import 'package:document_verification_system/functions/supabase.dart';
 import 'package:document_verification_system/screens/settings_page.dart';
 import 'package:document_verification_system/widgets/dashboard_card.dart';
 import 'package:document_verification_system/widgets/select_document.dart';
@@ -7,16 +8,32 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 class RequestDocument extends StatefulWidget {
-  const RequestDocument({Key? key}) : super(key: key);
+  String requestDocument;
+  RequestDocument({Key? key, this.requestDocument = 'cFXi7q'})
+      : super(key: key);
 
   @override
   State<RequestDocument> createState() => _RequestDocumentState();
 }
 
 class _RequestDocumentState extends State<RequestDocument> {
+  dynamic listofUserDocuments = {};
+  bool isDataLoaded = false;
+
+  documentData() async {
+    await getAllDocumentsByRequesterID('cFXi7q').then((value) => setState(
+          () {
+            listofUserDocuments = value;
+            isDataLoaded = true;
+            print(value);
+          },
+        ));
+  }
+
   @override
   void initState() {
     super.initState();
+    documentData();
   }
 
   @override
@@ -46,12 +63,7 @@ class _RequestDocumentState extends State<RequestDocument> {
               trailing: const Icon(Icons.settings),
               title: const Text("Settings"),
               onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const SettingsPage(),
-                  ),
-                );
+                Navigator.pushReplacementNamed(context, '/settings');
               },
             )
           ],
@@ -69,46 +81,56 @@ class _RequestDocumentState extends State<RequestDocument> {
             borderRadius: const BorderRadius.only(
               bottomRight: Radius.circular(size_100),
             ),
-            child: Container(
-              color: primary,
-              height: screenHeight(context) * 0.2,
-              width: screenWidth(context),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.end,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: const [
-                  Padding(
-                    padding: EdgeInsets.all(size_12),
-                    child: Text(
-                      "All Documents",
-                      style: TextStyle(
-                          fontSize: size_40,
-                          color: base,
-                          backgroundColor: Colors.transparent),
-                      overflow: TextOverflow.ellipsis,
+            child: InkWell(
+              onTap: () {
+                setState(() {
+                  isDataLoaded = false;
+                });
+                documentData();
+              },
+              child: Container(
+                color: primary,
+                height: screenHeight(context) * 0.2,
+                width: screenWidth(context),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: const [
+                    Padding(
+                      padding: EdgeInsets.all(size_12),
+                      child: Text(
+                        "All Documents",
+                        style: TextStyle(
+                            fontSize: size_40,
+                            color: base,
+                            backgroundColor: Colors.transparent),
+                        overflow: TextOverflow.ellipsis,
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           ),
-          Expanded(
-            child: ListView.builder(
-              padding: kIsWeb
-                  ? EdgeInsets.only(
-                      left: screenWidth(context) * 0.3,
-                      right: screenWidth(context) * 0.3,
-                      bottom: screenHeight(context) * 0.14)
-                  : EdgeInsets.only(bottom: screenHeight(context) * 0.14),
-              shrinkWrap: true,
-              itemCount: fileName.length,
-              itemBuilder: ((context, index) {
-                return DashboardCard(
-                  fileName: fileName[index],
-                );
-              }),
-            ),
-          ),
+          isDataLoaded
+              ? Expanded(
+                  child: ListView.builder(
+                  padding: kIsWeb
+                      ? EdgeInsets.only(
+                          left: screenWidth(context) * 0.3,
+                          right: screenWidth(context) * 0.3,
+                          bottom: screenHeight(context) * 0.14)
+                      : EdgeInsets.only(bottom: screenHeight(context) * 0.14),
+                  shrinkWrap: true,
+                  itemCount: listofUserDocuments.length,
+                  itemBuilder: ((context, index) {
+                    return DashboardCard(
+                      fileName: listofUserDocuments[index]['file_type'],
+                      imageInfo: listofUserDocuments[index],
+                    );
+                  }),
+                ))
+              : const Center(child: CircularProgressIndicator()),
         ],
       ),
       bottomSheet: SingleChildScrollView(
