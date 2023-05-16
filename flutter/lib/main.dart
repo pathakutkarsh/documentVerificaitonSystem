@@ -1,4 +1,8 @@
 import 'package:document_verification_system/constants/colors.dart';
+import 'package:document_verification_system/functions/supabase.dart';
+import 'package:document_verification_system/screens/Dashboard.dart';
+import 'package:document_verification_system/screens/login_screen.dart';
+import 'package:document_verification_system/screens/settings_page.dart';
 import 'package:document_verification_system/screens/signup_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -22,10 +26,18 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-        title: 'Document Scanner',
-        theme: ThemeData(
-            colorScheme: ColorScheme.fromSwatch()
-                .copyWith(primary: primary, secondary: base)),
-        home: const SignupScreen());
+      title: 'Document Scanner',
+      theme: ThemeData(
+          colorScheme: ColorScheme.fromSwatch()
+              .copyWith(primary: primary, secondary: base)),
+      initialRoute: getUserSession() != null ? '/dashboard' : '/',
+      routes: {
+        '/': (context) => const SignupScreen(),
+        '/login': (context) => const LoginScreen(),
+        '/dashboard': (context) => const Dashboard(),
+        '/settings': (context) => const SettingsPage(),
+        // '/': (context)=> const SignupScreen(),
+      },
+    );
   }
 }

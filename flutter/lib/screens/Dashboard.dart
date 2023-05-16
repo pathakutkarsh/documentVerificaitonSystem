@@ -22,13 +22,23 @@ class _DashboardState extends State<Dashboard> {
   bool isDataLoaded = false;
 
   documentData() async {
-    await getAllDocumentsByUserId('1').then((value) => setState(
-          () {
-            listofUserDocuments = value;
-            isDataLoaded = true;
-            print(value);
-          },
-        ));
+    await getAllDocumentsByUserId('1')
+        .then((value) => setState(
+              () {
+                listofUserDocuments = value;
+                isDataLoaded = true;
+                print(value);
+              },
+            ))
+        .onError(
+          (error, stackTrace) => showDialog(
+              context: context,
+              builder: (context) {
+                return AlertDialog(
+                  title: Text(error.toString()),
+                );
+              }),
+        );
   }
 
   @override
@@ -61,17 +71,21 @@ class _DashboardState extends State<Dashboard> {
             // DrawerHeader(child: Text("Settings")),
             ListTile(
               contentPadding: const EdgeInsets.symmetric(horizontal: size_20),
+              trailing: const Icon(Icons.logout),
+              title: const Text("Log Out"),
+              onTap: () {
+                logoutuser().whenComplete(
+                    () => {Navigator.pushReplacementNamed(context, '/')});
+              },
+            ),
+            ListTile(
+              contentPadding: const EdgeInsets.symmetric(horizontal: size_20),
               trailing: const Icon(Icons.settings),
               title: const Text("Settings"),
               onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const SettingsPage(),
-                  ),
-                );
+                Navigator.pushReplacementNamed(context, '/settings');
               },
-            )
+            ),
           ],
         ),
       ),

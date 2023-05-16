@@ -1,5 +1,6 @@
 import 'package:document_verification_system/constants/colors.dart';
 import 'package:document_verification_system/constants/size.dart';
+import 'package:document_verification_system/functions/supabase.dart';
 import 'package:document_verification_system/screens/dashboard.dart';
 import 'package:document_verification_system/screens/login_screen.dart';
 import 'package:flutter/foundation.dart';
@@ -28,6 +29,9 @@ class _SignupScreenState extends State<SignupScreen> {
   void dispose() {
     emailController.dispose();
     passwordController.dispose();
+    firstnameController.dispose();
+    lastnameController.dispose();
+    rePasswordController.dispose();
     super.dispose();
   }
 
@@ -74,7 +78,7 @@ class _SignupScreenState extends State<SignupScreen> {
             Padding(
               padding: kIsWeb
                   ? EdgeInsets.symmetric(horizontal: screenWidth(context) * 0.3)
-                  : EdgeInsets.all(0),
+                  : const EdgeInsets.all(0),
               child: Column(
                 children: [
                   Padding(
@@ -172,6 +176,7 @@ class _SignupScreenState extends State<SignupScreen> {
                     padding: const EdgeInsets.symmetric(
                         horizontal: size_30, vertical: size_6),
                     child: TextFormField(
+                      autovalidateMode: AutovalidateMode.onUserInteraction,
                       textInputAction: TextInputAction.done,
                       keyboardType: TextInputType.text,
                       controller: emailController,
@@ -207,6 +212,12 @@ class _SignupScreenState extends State<SignupScreen> {
                           fontSize: size_12,
                         ),
                       ),
+                      validator: (value) {
+                        if (!RegExp(r'\S+@\S+\.\S+').hasMatch(value!)) {
+                          return "Please enter a valid email address";
+                        } else
+                          null;
+                      },
                       onChanged: (value) {
                         print(value);
                       },
@@ -216,6 +227,8 @@ class _SignupScreenState extends State<SignupScreen> {
                     padding: const EdgeInsets.symmetric(
                         horizontal: size_30, vertical: size_6),
                     child: TextFormField(
+                      obscureText: true,
+                      autovalidateMode: AutovalidateMode.onUserInteraction,
                       textInputAction: TextInputAction.done,
                       keyboardType: TextInputType.text,
                       controller: passwordController,
@@ -251,6 +264,13 @@ class _SignupScreenState extends State<SignupScreen> {
                           fontSize: size_12,
                         ),
                       ),
+                      validator: (value) {
+                        if (value!.length <= 7) {
+                          return "Please enter a password greater than 8 characters";
+                        } else {
+                          return null;
+                        }
+                      },
                       onChanged: (value) {
                         print(value);
                       },
@@ -260,6 +280,8 @@ class _SignupScreenState extends State<SignupScreen> {
                     padding: const EdgeInsets.symmetric(
                         horizontal: size_30, vertical: size_6),
                     child: TextFormField(
+                      obscureText: true,
+                      autovalidateMode: AutovalidateMode.onUserInteraction,
                       textInputAction: TextInputAction.done,
                       keyboardType: TextInputType.text,
                       controller: rePasswordController,
@@ -295,8 +317,16 @@ class _SignupScreenState extends State<SignupScreen> {
                           fontSize: size_12,
                         ),
                       ),
+                      validator: (value) {
+                        if (passwordController.value.text.compareTo(value!) !=
+                            0) {
+                          return "Password Not matching";
+                        } else
+                          null;
+                      },
                       onChanged: (value) {
                         print(value);
+                        print(rePasswordController.value);
                       },
                     ),
                   ),
@@ -307,12 +337,57 @@ class _SignupScreenState extends State<SignupScreen> {
               padding: const EdgeInsets.only(top: size_60, bottom: size_12),
               child: InkWell(
                 onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const Dashboard(),
-                    ),
-                  );
+                  showDialog(
+                      context: context,
+                      builder: (context) {
+                        return Dialog(
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: const [
+                              CircularProgressIndicator(),
+                              Dialog(
+                                child: Text('Hold Up while we create Account '),
+                              ),
+                            ],
+                          ),
+                        );
+                      });
+                  if ((RegExp(r'\S+@\S+\.\S+')
+                          .hasMatch(emailController.value.text)) &&
+                      passwordController.value.text ==
+                          (rePasswordController.value.text)) {
+                    createNewUser(emailController.value.text,
+                            passwordController.value.text)
+                        .onError((error, stackTrace) => {
+                              Navigator.pop(context),
+                              showDialog(
+                                  context: context,
+                                  builder: (context) {
+                                    return AlertDialog(
+                                      title: Text(error.toString()),
+                                    );
+                                  }),
+                            })
+                        .whenComplete(() => Navigator.pushReplacementNamed(
+                            context, '/dashboard'));
+                  } else {
+                    showDialog(
+                        context: context,
+                        builder: (context) {
+                          return const AlertDialog(
+                            title: Text('Email or Password Invalid'),
+                          );
+                        });
+                  }
+
+                  // Navigator.pushReplacementNamed(context, '/dashboard');
+                  // Navigator.push(
+                  //   context,
+                  //   MaterialPageRoute(
+                  //     builder: (context) => const Dashboard(),
+                  //   ),
+                  // );
                 },
                 child: Container(
                   width: 240,
@@ -341,12 +416,7 @@ class _SignupScreenState extends State<SignupScreen> {
                 TextButton(
                   onPressed: () {
                     // Navigator.pop(context);
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const LoginScreen(),
-                      ),
-                    );
+                    Navigator.pushReplacementNamed(context, '/login');
                   },
                   child: const Text("Login"),
                 ),

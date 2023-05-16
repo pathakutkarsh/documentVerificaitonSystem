@@ -162,7 +162,6 @@ class _SelectDocumentState extends State<SelectDocument> {
                       isDocumentSelected
                           ? {
                               generatedCode = getRandomString(6),
-                              isButtonSelected = true,
                             }
                           : null;
                       createNewDocumentRequest(
@@ -170,7 +169,9 @@ class _SelectDocumentState extends State<SelectDocument> {
                         selectionList.values.elementAt(0),
                         selectionList.values.elementAt(1),
                         selectionList.values.elementAt(2),
-                      );
+                      ).whenComplete(() => {
+                            isButtonSelected = true,
+                          });
                     },
                     child: Container(
                       width: 240,

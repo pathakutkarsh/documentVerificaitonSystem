@@ -8,8 +8,9 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 class RequestDocument extends StatefulWidget {
-   String requestDocument;
-   RequestDocument({Key? key, this.requestDocument='cFXi7q'}) : super(key: key);
+  String requestDocument;
+  RequestDocument({Key? key, this.requestDocument = 'cFXi7q'})
+      : super(key: key);
 
   @override
   State<RequestDocument> createState() => _RequestDocumentState();
@@ -32,6 +33,7 @@ class _RequestDocumentState extends State<RequestDocument> {
   @override
   void initState() {
     super.initState();
+    documentData();
   }
 
   @override
@@ -61,12 +63,7 @@ class _RequestDocumentState extends State<RequestDocument> {
               trailing: const Icon(Icons.settings),
               title: const Text("Settings"),
               onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const SettingsPage(),
-                  ),
-                );
+                Navigator.pushReplacementNamed(context, '/settings');
               },
             )
           ],

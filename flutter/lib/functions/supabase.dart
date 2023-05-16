@@ -3,23 +3,24 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-final supabase = Supabase.instance.client;
+final _supabase = Supabase.instance.client;
 
 Future<List> getAllDocumentsByUserId(String userId) async {
   final data =
-      await supabase.from('documents').select('*').eq("user_id", userId);
+      await _supabase.from('documents').select('*').eq("user_id", userId);
   return data;
 }
 
 Future<Uint8List> downloadImageFromFileName(String fileName) async {
-  String filepath = "/edited/" + fileName.trim();
+  String filepath = "/edited/${fileName.trim()}";
   final Uint8List file =
-      await supabase.storage.from('documents').download(filepath);
+      await _supabase.storage.from('documents').download(filepath);
   return file;
 }
 
-createNewDocumentRequest(String id, bool aadhar, bool hsc, bool ssc) async {
-  await supabase.from('request').insert({
+Future<PostgrestFilterBuilder<dynamic>> createNewDocumentRequest(
+    String id, bool aadhar, bool hsc, bool ssc) async {
+  return await _supabase.from('request').insert({
     'id': id,
     'request_aadhar': aadhar,
     'request_hsc': hsc,
@@ -28,14 +29,14 @@ createNewDocumentRequest(String id, bool aadhar, bool hsc, bool ssc) async {
 }
 
 Future<Map> getListofRequestedDocumentsFromID(String id) async {
-  final List data = await supabase.from('request').select('*').eq("id", id);
+  final List data = await _supabase.from('request').select('*').eq("id", id);
   print(data);
   return data[0];
 }
 
 uploadNewDocument(
     fileName, isValidated, isVerified, userId, requestedById, fileType) async {
-  await supabase.from('documents').insert(
+  await _supabase.from('documents').insert(
     {
       'file_name': fileName,
       'is_validated': isValidated,
@@ -50,7 +51,7 @@ uploadNewDocument(
 }
 
 uploadImageToBucket(String filePath, fileName) async {
-  dynamic output = await supabase.storage
+  dynamic output = await _supabase.storage
       .from('documents')
       .upload('/uploaded/$fileName', File(filePath));
   print(output);
@@ -58,6 +59,23 @@ uploadImageToBucket(String filePath, fileName) async {
 
 Future<List> getAllDocumentsByRequesterID(String userId) async {
   final data =
-      await supabase.from('documents').select('*').eq("requested_by", userId);
+      await _supabase.from('documents').select('*').eq("requested_by", userId);
   return data;
+}
+
+Future createNewUser(String email, String password) async {
+  return await _supabase.auth.signUp(email: email, password: password);
+}
+
+Future signInUser(String email, String password) async {
+  return await _supabase.auth
+      .signInWithPassword(email: email, password: password);
+}
+
+getUserSession() {
+  return _supabase.auth.currentSession;
+}
+
+Future logoutuser() {
+  return _supabase.auth.signOut();
 }
