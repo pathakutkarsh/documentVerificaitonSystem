@@ -78,7 +78,6 @@ class SelectUploadMethod extends StatelessWidget {
                       )
                     : null;
               });
-              print(pickedImageFromGallery);
             },
           )
         ],

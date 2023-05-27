@@ -1,16 +1,15 @@
 import 'package:document_verification_system/constants/colors.dart';
 import 'package:document_verification_system/constants/size.dart';
 import 'package:document_verification_system/functions/supabase.dart';
-import 'package:document_verification_system/screens/settings_page.dart';
 import 'package:document_verification_system/widgets/dashboard_card.dart';
 import 'package:document_verification_system/widgets/select_document.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 class RequestDocument extends StatefulWidget {
-  String requestDocument;
-  RequestDocument({Key? key, this.requestDocument = 'cFXi7q'})
-      : super(key: key);
+  const RequestDocument({
+    Key? key,
+  }) : super(key: key);
 
   @override
   State<RequestDocument> createState() => _RequestDocumentState();
@@ -25,7 +24,6 @@ class _RequestDocumentState extends State<RequestDocument> {
           () {
             listofUserDocuments = value;
             isDataLoaded = true;
-            print(value);
           },
         ));
   }
@@ -57,6 +55,15 @@ class _RequestDocumentState extends State<RequestDocument> {
           reverse: true,
           padding: EdgeInsets.zero,
           children: [
+            ListTile(
+              contentPadding: const EdgeInsets.symmetric(horizontal: size_20),
+              trailing: const Icon(Icons.logout),
+              title: const Text("Log Out"),
+              onTap: () {
+                logoutuser().whenComplete(
+                    () => {Navigator.pushReplacementNamed(context, '/login')});
+              },
+            ),
             // DrawerHeader(child: Text("Settings")),
             ListTile(
               contentPadding: const EdgeInsets.symmetric(horizontal: size_20),
@@ -172,7 +179,7 @@ class _RequestDocumentState extends State<RequestDocument> {
                     showDialog(
                         context: context,
                         builder: (context) {
-                          return SelectDocument();
+                          return const SelectDocument();
                         });
                   },
                   icon: const Icon(Icons.add),

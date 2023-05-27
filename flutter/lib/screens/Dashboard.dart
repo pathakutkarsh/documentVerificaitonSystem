@@ -18,12 +18,11 @@ class _DashboardState extends State<Dashboard> {
   bool isDataLoaded = false;
 
   documentData() async {
-    await getAllDocumentsByUserId(getUserId())
+    await getAllDocumentsByUserId(await getUserId())
         .then((value) => setState(
               () {
                 listofUserDocuments = value;
                 isDataLoaded = true;
-                print(value);
               },
             ))
         .onError(
@@ -71,7 +70,7 @@ class _DashboardState extends State<Dashboard> {
               title: const Text("Log Out"),
               onTap: () {
                 logoutuser().whenComplete(
-                    () => {Navigator.pushReplacementNamed(context, '/')});
+                    () => {Navigator.pushReplacementNamed(context, '/login')});
               },
             ),
             ListTile(

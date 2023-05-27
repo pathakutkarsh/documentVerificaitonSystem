@@ -1,17 +1,15 @@
-import 'dart:async';
 import 'dart:io';
 import 'package:document_verification_system/constants/colors.dart';
 import 'package:document_verification_system/constants/size.dart';
 import 'package:document_verification_system/functions/supabase.dart';
-import 'package:document_verification_system/widgets/enter_code.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
 class UploadScreen extends StatefulWidget {
   final List<XFile> imageList;
-  final requestedById;
-  final documentType;
+  final String requestedById;
+  final String documentType;
   const UploadScreen(
       {super.key,
       required this.imageList,
@@ -30,8 +28,8 @@ class _UploadScreen extends State<UploadScreen> {
         .whenComplete(() => {createEntry()});
   }
 
-  createEntry() {
-    uploadNewDocument(widget.imageList[0].name, false, false, getUserId(),
+  createEntry() async {
+    uploadNewDocument(widget.imageList[0].name, false, false, await getUserId(),
             widget.requestedById, widget.documentType)
         .whenComplete(() => {
               setState(
@@ -55,7 +53,6 @@ class _UploadScreen extends State<UploadScreen> {
 
   @override
   Widget build(BuildContext context) {
-    print("Requested by id at upload screen is ${widget.requestedById}");
     return Scaffold(
       appBar: AppBar(
           shadowColor: Colors.transparent,

@@ -13,8 +13,6 @@ class EnterCodeDialog extends StatefulWidget {
 class _EnterCodeDialogState extends State<EnterCodeDialog> {
   TextEditingController codeController = TextEditingController();
 
-  String enteredCodeIs = '';
-
   @override
   void dispose() {
     codeController.dispose();
@@ -73,10 +71,6 @@ class _EnterCodeDialogState extends State<EnterCodeDialog> {
                     fontSize: size_12,
                   ),
                 ),
-                onChanged: (value) {
-                  enteredCodeIs = value;
-                  print(value);
-                },
               ),
             ),
             TextButton(
@@ -85,7 +79,7 @@ class _EnterCodeDialogState extends State<EnterCodeDialog> {
                   context,
                   MaterialPageRoute(
                     builder: (context) => RequiredDocumentList(
-                      requestID: enteredCodeIs,
+                      requestID: codeController.value.text,
                     ),
                   ),
                 );

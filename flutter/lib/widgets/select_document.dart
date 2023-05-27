@@ -145,8 +145,6 @@ class _SelectDocumentState extends State<SelectDocument> {
                                 selectedDocuments.isNotEmpty
                                     ? isDocumentSelected = true
                                     : isDocumentSelected = false;
-                                print(selectedDocuments);
-                                print(selectionList.values.elementAt(index));
                               },
                             );
                           },

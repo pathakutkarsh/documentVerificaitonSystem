@@ -73,7 +73,6 @@ class _SettingsPageState extends State<SettingsPage> {
                 ),
                 onEditingComplete: () {
                   setServerURL(urlController.text);
-                  print(getServerURL());
                 },
               ),
             ),
