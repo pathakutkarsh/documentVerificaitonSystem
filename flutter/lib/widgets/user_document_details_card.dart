@@ -1,19 +1,42 @@
 import 'package:document_verification_system/constants/colors.dart';
 import 'package:document_verification_system/constants/size.dart';
+import 'package:document_verification_system/functions/supabase.dart';
+import 'package:document_verification_system/screens/document_detail.dart';
 import 'package:document_verification_system/screens/uploaded_document_by_request_id_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-class DepartmentDocumentListCard extends StatelessWidget {
+class UserDocumentDetailsCard extends StatefulWidget {
   final Map getRequiredDocumentDetails;
-  const DepartmentDocumentListCard(
+  const UserDocumentDetailsCard(
       {super.key, required this.getRequiredDocumentDetails});
 
+  @override
+  State<UserDocumentDetailsCard> createState() =>
+      _UserDocumentDetailsCardState();
+}
+
+class _UserDocumentDetailsCardState extends State<UserDocumentDetailsCard> {
+  Map userDetails = {};
+  getUsername() async {
+    await getUserInfoFromDatabase(widget.getRequiredDocumentDetails['user_id'])
+        .then((value) {
+      setState(() {
+        userDetails = value;
+      });
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    getUsername();
+  }
 
   @override
   Widget build(BuildContext context) {
     DateTime createdOn =
-        DateTime.parse(getRequiredDocumentDetails['created_at']);
+        DateTime.parse(widget.getRequiredDocumentDetails['created_at']);
     return Padding(
       padding: const EdgeInsets.all(size_8),
       child: Material(
@@ -29,7 +52,7 @@ class DepartmentDocumentListCard extends StatelessWidget {
           // style: ListTileStyle.list,
           // tileColor: base,
           title: Text(
-            getRequiredDocumentDetails['request_id'],
+            "${userDetails['first_name']} ${userDetails['last_name']} ",
           ),
           trailing: IconButton(
             icon: const Icon(
@@ -37,17 +60,7 @@ class DepartmentDocumentListCard extends StatelessWidget {
               color: primary,
               size: size_30,
             ),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) {
-                    return UploadedDocumentByRequestIdScreen(
-                        requesterId: getRequiredDocumentDetails['request_id']);
-                  },
-                ),
-              );
-            },
+            onPressed: () {},
           ),
           children: [
             ListTile(
@@ -67,30 +80,28 @@ class DepartmentDocumentListCard extends StatelessWidget {
               indent: size_10,
               endIndent: size_10,
             ),
-            getRequiredDocumentDetails['request_hsc']
-                ? const ListTile(
-                    dense: true,
-                    title: Text(
-                      "HSC Marksheet",
+            ListTile(
+              textColor: primary,
+              dense: true,
+              title: Text(widget.getRequiredDocumentDetails['file_type']),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => DocumentDetails(
+                      documentName:
+                          widget.getRequiredDocumentDetails['file_type'],
+                      documentID:
+                          widget.getRequiredDocumentDetails['id'].toString(),
+                      imageInfo: widget.getRequiredDocumentDetails,
                     ),
-                  )
-                : Container(),
-            getRequiredDocumentDetails['request_ssc']
-                ? const ListTile(
-                    dense: true,
-                    title: Text(
-                      "SSC Marksheet",
-                    ),
-                  )
-                : Container(),
-            getRequiredDocumentDetails['request_aadhar']
-                ? const ListTile(
-                    dense: true,
-                    title: Text(
-                      "Aadhar Card",
-                    ),
-                  )
-                : Container(),
+                  ),
+                );
+              },
+            ),
+            const SizedBox(
+              height: size_4,
+            )
           ],
         ),
       ),

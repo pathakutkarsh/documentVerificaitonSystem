@@ -123,6 +123,12 @@ Future addUserInfoToDatabase(
   );
 }
 
+Future getUserInfoFromDatabase(userId) async {
+  var userDetails =
+      await _supabase.from('users').select('*').eq('user_id', userId);
+  return userDetails[0];
+}
+
 Future<bool> isUserCommercial(userId) async {
   if (userId == null) {
     return false;

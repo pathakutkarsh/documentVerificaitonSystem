@@ -75,7 +75,7 @@ class _DashboardCardState extends State<DashboardCard> {
                 MaterialPageRoute(
                     builder: (context) => DocumentDetails(
                           documentName: widget.fileName,
-                          documentID: 'ad',
+                          documentID: widget.imageInfo['id'].toString(),
                           imageInfo: widget.imageInfo,
                         )),
               );

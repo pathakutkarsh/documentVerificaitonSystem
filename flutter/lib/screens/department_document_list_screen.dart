@@ -39,65 +39,79 @@ class DepartmentDocumentListScreenState
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: primary,
-        shadowColor: Colors.transparent,
-        primary: true,
-      ),
-      body: isDetailLoaded
-          ? SingleChildScrollView(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  ClipRRect(
-                    clipBehavior: Clip.antiAliasWithSaveLayer,
-                    borderRadius: const BorderRadius.only(
-                      bottomRight: Radius.circular(size_100),
-                    ),
-                    child: Container(
-                      color: primary,
-                      height: screenHeight(context) * 0.175,
-                      width: screenWidth(context),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.all(size_12),
-                            child: Text(
-                              "List of Requested Documents for ${widget.departmentName}",
-                              style: const TextStyle(
-                                  fontSize: size_30,
-                                  color: base,
-                                  backgroundColor: Colors.transparent),
-                              overflow: TextOverflow.visible,
+        appBar: AppBar(
+          backgroundColor: primary,
+          shadowColor: Colors.transparent,
+          primary: true,
+        ),
+        body: isDetailLoaded
+            ? SingleChildScrollView(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    ClipRRect(
+                      clipBehavior: Clip.antiAliasWithSaveLayer,
+                      borderRadius: const BorderRadius.only(
+                        bottomRight: Radius.circular(size_100),
+                      ),
+                      child: Container(
+                        color: primary,
+                        height: screenHeight(context) * 0.175,
+                        width: screenWidth(context),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.all(size_12),
+                              child: Text(
+                                "List of Requested Documents for ${widget.departmentName}",
+                                style: const TextStyle(
+                                    fontSize: size_30,
+                                    color: base,
+                                    backgroundColor: Colors.transparent),
+                                overflow: TextOverflow.visible,
+                              ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
                     ),
-                  ),
-                  ListView.builder(
-                    padding: kIsWeb
-                        ? EdgeInsets.only(
-                            left: screenWidth(context) * 0.3,
-                            right: screenWidth(context) * 0.3,
-                            bottom: screenHeight(context) * 0.14)
-                        : EdgeInsets.only(bottom: screenHeight(context) * 0.14),
-                    shrinkWrap: true,
-                    itemCount: getRequiredDocumentDetails.length,
-                    itemBuilder: ((context, index) {
-                      return DepartmentDocumentListCard(
-                          getRequiredDocumentDetails:
-                              getRequiredDocumentDetails[index]);
-                    }),
-                  ),
-                ],
-              ),
-            )
-          : const Center(
-              child: CircularProgressIndicator(),
-            ),
-    );
+                    getRequiredDocumentDetails.isNotEmpty
+                        ? ListView.builder(
+                            padding: kIsWeb
+                                ? EdgeInsets.only(
+                                    left: screenWidth(context) * 0.3,
+                                    right: screenWidth(context) * 0.3,
+                                    bottom: screenHeight(context) * 0.14)
+                                : EdgeInsets.only(
+                                    bottom: screenHeight(context) * 0.14),
+                            shrinkWrap: true,
+                            itemCount: getRequiredDocumentDetails.length,
+                            itemBuilder: ((context, index) {
+                              return DepartmentDocumentListCard(
+                                  getRequiredDocumentDetails:
+                                      getRequiredDocumentDetails[index]);
+                            }),
+                          )
+                        : Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Image.asset('lib/assets/fileUpload.png'),
+                              const Text(
+                                "Looks Like No Documents \nare Requested for This Department",
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  fontSize: size_18,
+                                ),
+                              )
+                            ],
+                          )
+                  ],
+                ),
+              )
+            : const Center(
+                child: CircularProgressIndicator(),
+              ));
   }
 }
