@@ -1,37 +1,28 @@
 import 'package:document_verification_system/constants/colors.dart';
 import 'package:document_verification_system/constants/size.dart';
 import 'package:document_verification_system/functions/supabase.dart';
-import 'package:document_verification_system/widgets/dashboard_card.dart';
+import 'package:document_verification_system/widgets/department_name_card.dart';
 import 'package:document_verification_system/widgets/select_document.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
-class RequestDocument extends StatefulWidget {
-  const RequestDocument({
+class AllDepartmentDashboard extends StatefulWidget {
+  const AllDepartmentDashboard({
     Key? key,
   }) : super(key: key);
 
   @override
-  State<RequestDocument> createState() => _RequestDocumentState();
+  State<AllDepartmentDashboard> createState() => _AllDepartmentDashboardState();
 }
 
-class _RequestDocumentState extends State<RequestDocument> {
+class _AllDepartmentDashboardState extends State<AllDepartmentDashboard> {
   dynamic listofUserDocuments = {};
   bool isDataLoaded = false;
-
-  documentData() async {
-    await getAllDocumentsByRequesterID('cFXi7q').then((value) => setState(
-          () {
-            listofUserDocuments = value;
-            isDataLoaded = true;
-          },
-        ));
-  }
+  bool isListEmpty = false;
 
   @override
   void initState() {
     super.initState();
-    documentData();
   }
 
   @override
@@ -45,6 +36,8 @@ class _RequestDocumentState extends State<RequestDocument> {
     "SSC Certificate",
     "HSC Certificate",
   ];
+
+  List<String> departmentName = ['HR', 'Dev', 'Ops', 'DevOps', 'IT', 'QA'];
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -88,56 +81,48 @@ class _RequestDocumentState extends State<RequestDocument> {
             borderRadius: const BorderRadius.only(
               bottomRight: Radius.circular(size_100),
             ),
-            child: InkWell(
-              onTap: () {
-                setState(() {
-                  isDataLoaded = false;
-                });
-                documentData();
-              },
-              child: Container(
-                color: primary,
-                height: screenHeight(context) * 0.2,
-                width: screenWidth(context),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: const [
-                    Padding(
-                      padding: EdgeInsets.all(size_12),
-                      child: Text(
-                        "All Documents",
-                        style: TextStyle(
-                            fontSize: size_40,
-                            color: base,
-                            backgroundColor: Colors.transparent),
-                        overflow: TextOverflow.ellipsis,
-                      ),
+            child: Container(
+              color: primary,
+              height: screenHeight(context) * 0.2,
+              width: screenWidth(context),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.end,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: const [
+                  Padding(
+                    padding: EdgeInsets.all(size_12),
+                    child: Text(
+                      "All Departments",
+                      style: TextStyle(
+                          fontSize: size_40,
+                          color: base,
+                          backgroundColor: Colors.transparent),
+                      overflow: TextOverflow.ellipsis,
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
             ),
           ),
-          isDataLoaded
-              ? Expanded(
-                  child: ListView.builder(
-                  padding: kIsWeb
-                      ? EdgeInsets.only(
-                          left: screenWidth(context) * 0.3,
-                          right: screenWidth(context) * 0.3,
-                          bottom: screenHeight(context) * 0.14)
-                      : EdgeInsets.only(bottom: screenHeight(context) * 0.14),
-                  shrinkWrap: true,
-                  itemCount: listofUserDocuments.length,
-                  itemBuilder: ((context, index) {
-                    return DashboardCard(
-                      fileName: listofUserDocuments[index]['file_type'],
-                      imageInfo: listofUserDocuments[index],
-                    );
-                  }),
-                ))
-              : const Center(child: CircularProgressIndicator()),
+          Expanded(
+            child: GridView.builder(
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2, childAspectRatio: 1 / 0.45),
+              padding: kIsWeb
+                  ? EdgeInsets.only(
+                      left: screenWidth(context) * 0.3,
+                      right: screenWidth(context) * 0.3,
+                      bottom: screenHeight(context) * 0.14)
+                  : EdgeInsets.only(bottom: screenHeight(context) * 0.14),
+              shrinkWrap: true,
+              itemCount: departmentName.length,
+              itemBuilder: ((context, index) {
+                return DepartmentNameCard(
+                  departmentName: departmentName[index],
+                );
+              }),
+            ),
+          )
         ],
       ),
       bottomSheet: SingleChildScrollView(

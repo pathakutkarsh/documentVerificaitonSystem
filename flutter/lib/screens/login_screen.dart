@@ -203,10 +203,12 @@ class _LoginScreenState extends State<LoginScreen> {
                                     );
                                   }),
                             })
-                        .whenComplete(() => {
-                              Navigator.pushReplacementNamed(
-                                  context, '/dashboard')
-                            });
+                        .whenComplete(() async {
+                      String userId = await getUserId();
+                      bool isCommercialLogin = await isUserCommercial(userId);
+                      Navigator.pushReplacementNamed(context,
+                          isCommercialLogin ? '/request' : '/dashboard');
+                    });
                   } else {
                     showDialog(
                       context: context,
@@ -217,13 +219,6 @@ class _LoginScreenState extends State<LoginScreen> {
                       },
                     );
                   }
-
-                  // Navigator.push(
-                  //   context,
-                  //   MaterialPageRoute(
-                  //     builder: (context) => RequestDocument(),
-                  //   ),
-                  // );
                 },
                 child: Container(
                   width: 240,

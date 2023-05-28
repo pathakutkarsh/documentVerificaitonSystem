@@ -25,7 +25,7 @@ class _DocumentDetailsState extends State<DocumentDetails> {
   bool isFileLoaded = false;
   late DateTime createdOn;
   getDownloadedFile() {
-    downloadImageFromFileName(widget.imageInfo['edited_image_name']).then(
+    downloadImageFromFileName(widget.imageInfo['edited_image_name'],widget.imageInfo['file_name']).then(
       (value) => setState(
         () {
           uploadFile = value;

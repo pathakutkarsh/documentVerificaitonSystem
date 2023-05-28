@@ -11,26 +11,51 @@ Future<List> getAllDocumentsByUserId(String userId) async {
   return data;
 }
 
-Future<Uint8List> downloadImageFromFileName(String fileName) async {
+Future<Uint8List> downloadImageFromFileName(
+    String fileName, String originalFileName) async {
   String filepath = "/edited/${fileName.trim()}";
+  if (fileName.contains(originalFileName)) {
+    filepath = "/uploaded/${fileName.trim()}";
+  }
   final Uint8List file =
       await _supabase.storage.from('documents').download(filepath);
   return file;
 }
 
-Future<PostgrestFilterBuilder<dynamic>> createNewDocumentRequest(
-    String id, bool aadhar, bool hsc, bool ssc) async {
+Future createNewDocumentRequest(String id, String userId, bool aadhar, bool hsc,
+    bool ssc, String department) async {
   return await _supabase.from('request').insert({
-    'id': id,
+    'request_id': id,
+    'created_by': userId,
     'request_aadhar': aadhar,
     'request_hsc': hsc,
-    'request_ssc': ssc
+    'request_ssc': ssc,
+    'department': department,
   });
 }
 
 Future<Map> getListofRequestedDocumentsFromID(String id) async {
-  final List data = await _supabase.from('request').select('*').eq("id", id);
+  final List data =
+      await _supabase.from('request').select('*').eq("request_id", id);
   return data[0];
+}
+
+Future<List> getListofRequestedDocumentsFromRequesterId(String userId) async {
+  final List data =
+      await _supabase.from('request').select('*').eq("created_by", userId);
+  if (data.isEmpty) {
+    return [];
+  }
+  return data;
+}
+
+Future<List> getListofRequestedDocumentsByDepartment(String department) async {
+  final List data =
+      await _supabase.from('request').select('*').eq("department", department);
+  if (data.isEmpty) {
+    return [];
+  }
+  return data;
 }
 
 Future uploadNewDocument(
@@ -56,9 +81,11 @@ Future<String> uploadImageToBucket(String filePath, fileName) async {
   return output;
 }
 
-Future<List> getAllDocumentsByRequesterID(String userId) async {
-  final data =
-      await _supabase.from('documents').select('*').eq("requested_by", userId);
+Future<List> getAllDocumentsByRequesterID(String requesterId) async {
+  final data = await _supabase
+      .from('documents')
+      .select('*')
+      .eq("requested_by", requesterId);
   return data;
 }
 
@@ -104,7 +131,6 @@ Future<bool> isUserCommercial(userId) async {
       .from('users')
       .select('is_commercial')
       .eq('user_id', userId);
-  print(response[0]['is_commercial']);
   return response[0]['is_commercial'];
 }
 

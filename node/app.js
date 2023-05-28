@@ -18,7 +18,7 @@ async function listentoDb() {
           var fileName = await downloadDataFromStorage(payload.new['file_name'])
           executePowerShell(fileName)
   
-        }, 20000);
+        }, 10000);
 
       }
     )
