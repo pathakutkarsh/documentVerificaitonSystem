@@ -58,14 +58,6 @@ class _AllDepartmentDashboardState extends State<AllDepartmentDashboard> {
               },
             ),
             // DrawerHeader(child: Text("Settings")),
-            ListTile(
-              contentPadding: const EdgeInsets.symmetric(horizontal: size_20),
-              trailing: const Icon(Icons.settings),
-              title: const Text("Settings"),
-              onTap: () {
-                Navigator.pushReplacementNamed(context, '/settings');
-              },
-            )
           ],
         ),
       ),

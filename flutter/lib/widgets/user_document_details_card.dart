@@ -2,7 +2,6 @@ import 'package:document_verification_system/constants/colors.dart';
 import 'package:document_verification_system/constants/size.dart';
 import 'package:document_verification_system/functions/supabase.dart';
 import 'package:document_verification_system/screens/document_detail.dart';
-import 'package:document_verification_system/screens/uploaded_document_by_request_id_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -35,8 +34,8 @@ class _UserDocumentDetailsCardState extends State<UserDocumentDetailsCard> {
 
   @override
   Widget build(BuildContext context) {
-    DateTime createdOn =
-        DateTime.parse(widget.getRequiredDocumentDetails['created_at']);
+    // DateTime createdOn =
+    //     DateTime.parse(widget.getRequiredDocumentDetails['created_at']);
     return Padding(
       padding: const EdgeInsets.all(size_8),
       child: Material(
@@ -63,12 +62,6 @@ class _UserDocumentDetailsCardState extends State<UserDocumentDetailsCard> {
             onPressed: () {},
           ),
           children: [
-            ListTile(
-              dense: true,
-              title: Text(
-                "Created on: ${DateFormat.yMd().add_jm().format(createdOn)}",
-              ),
-            ),
             const ListTile(
               dense: true,
               title: Text(
@@ -80,22 +73,46 @@ class _UserDocumentDetailsCardState extends State<UserDocumentDetailsCard> {
               indent: size_10,
               endIndent: size_10,
             ),
-            ListTile(
-              textColor: primary,
-              dense: true,
-              title: Text(widget.getRequiredDocumentDetails['file_type']),
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => DocumentDetails(
-                      documentName:
-                          widget.getRequiredDocumentDetails['file_type'],
-                      documentID:
-                          widget.getRequiredDocumentDetails['id'].toString(),
-                      imageInfo: widget.getRequiredDocumentDetails,
-                    ),
-                  ),
+            ListView.builder(
+              shrinkWrap: true,
+              itemCount: widget.getRequiredDocumentDetails['file_list'].length,
+              itemBuilder: (context, index) {
+                return ListTile(
+                  textColor: primary,
+                  dense: true,
+                  title: Text(widget
+                      .getRequiredDocumentDetails['file_list'][index].keys
+                      .toList()[0]
+                      .toString()),
+                  onTap: () {
+                    print(widget
+                        .getRequiredDocumentDetails['file_list'][index].values
+                        .toList()[0]);
+                    print(widget
+                        .getRequiredDocumentDetails['file_list'][index].keys
+                        .toList()[0]
+                        .toString());
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => DocumentDetails(
+                          documentName: widget
+                              .getRequiredDocumentDetails['file_list'][index]
+                              .keys
+                              .toString(),
+                          documentID: widget
+                              .getRequiredDocumentDetails['file_list'][index]
+                              .values
+                              .toList()[0]['id']
+                              .toString(),
+                          imageInfo: widget
+                              .getRequiredDocumentDetails['file_list'][index]
+                              .values
+                              .toList()[0],
+                        ),
+                      ),
+                    );
+                  },
                 );
               },
             ),
@@ -108,3 +125,6 @@ class _UserDocumentDetailsCardState extends State<UserDocumentDetailsCard> {
     );
   }
 }
+
+// 
+// ${DateFormat.yMd().add_jm().format(createdOn)}

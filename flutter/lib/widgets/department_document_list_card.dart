@@ -2,13 +2,13 @@ import 'package:document_verification_system/constants/colors.dart';
 import 'package:document_verification_system/constants/size.dart';
 import 'package:document_verification_system/screens/uploaded_document_by_request_id_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 
 class DepartmentDocumentListCard extends StatelessWidget {
   final Map getRequiredDocumentDetails;
   const DepartmentDocumentListCard(
       {super.key, required this.getRequiredDocumentDetails});
-
 
   @override
   Widget build(BuildContext context) {
@@ -50,6 +50,20 @@ class DepartmentDocumentListCard extends StatelessWidget {
             },
           ),
           children: [
+            ListTile(
+              dense: true,
+              title: Text(
+                "Generated Code : ${getRequiredDocumentDetails['request_id']}",
+              ),
+              onTap: () {
+                Clipboard.setData(ClipboardData(
+                        text: getRequiredDocumentDetails['request_id']))
+                    .then((_) {
+                  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                      content: Text("Copied Code to Clipboard")));
+                });
+              },
+            ),
             ListTile(
               dense: true,
               title: Text(

@@ -25,11 +25,38 @@ class _UploadedDocumentByRequestIdScreenState
       setState(
         () {
           listofAllDocumentsbyRequester = value;
+          createUserDocumentMap();
           // createCardsBasedOnRequiredDocuments();
           isDetailLoaded = true;
         },
       );
     });
+  }
+
+  List<Map> userDocumentMap = [];
+  createUserDocumentMap() {
+    Map value = {};
+    for (value in listofAllDocumentsbyRequester) {
+      if (userDocumentMap
+          .where((element) => element['user_id'] == value['user_id'])
+          .isEmpty) {
+        userDocumentMap.add({'user_id': value['user_id']});
+        userDocumentMap
+            .where((element) => element['user_id'] == value['user_id'])
+            .first
+            .addEntries({
+              'file_list': [
+                {value['file_type']: value}
+              ]
+            }.entries);
+      } else {
+        userDocumentMap
+            .where((element) => element['user_id'] == value['user_id'])
+            .first['file_list']
+            .add({value['file_type']: value});
+      }
+    }
+    print(userDocumentMap);
   }
 
   @override
@@ -87,11 +114,11 @@ class _UploadedDocumentByRequestIdScreenState
                             bottom: screenHeight(context) * 0.14)
                         : EdgeInsets.only(bottom: screenHeight(context) * 0.14),
                     shrinkWrap: true,
-                    itemCount: listofAllDocumentsbyRequester.length,
+                    itemCount: userDocumentMap.length,
                     itemBuilder: ((context, index) {
                       return UserDocumentDetailsCard(
                           getRequiredDocumentDetails:
-                              listofAllDocumentsbyRequester[index]);
+                              userDocumentMap[index]);
                     }),
                   ),
                 ],
