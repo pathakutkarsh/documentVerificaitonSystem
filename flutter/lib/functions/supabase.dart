@@ -140,6 +140,20 @@ Future<bool> isUserCommercial(userId) async {
   return response[0]['is_commercial'];
 }
 
+Future markDocumentAsAccepted(int id) async {
+  return await _supabase
+      .from('documents')
+      .update({'is_accepted': true}).eq('id', id);
+}
+
+Future<List> checkIfDocumentsAccepted(String userId) async {
+  return await _supabase
+      .from('documents')
+      .select('is_accepted')
+      .eq('user_id', userId)
+      .neq('is_accepted', true);
+}
+
 dispose() {
   return _supabase.dispose();
 }

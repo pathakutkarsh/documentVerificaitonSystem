@@ -1,4 +1,5 @@
 import 'package:document_verification_system/constants/colors.dart';
+import 'package:document_verification_system/constants/variables.dart';
 import 'package:document_verification_system/functions/supabase.dart';
 import 'package:document_verification_system/screens/dashboard.dart';
 import 'package:document_verification_system/screens/login_screen.dart';
@@ -20,6 +21,7 @@ void main() async {
   ).then((value) async {
     userId = value.client.auth.currentUser?.id;
     isCommercial = await isUserCommercial(userId);
+    setIsUserCommercial(isCommercial);
   });
   runApp(MyApp(
     isCommercial: isCommercial,
@@ -52,7 +54,6 @@ class MyApp extends StatelessWidget {
         '/': (context) => const SignupScreen(),
         '/login': (context) => const LoginScreen(),
         '/dashboard': (context) => const Dashboard(),
-        '/settings': (context) => const SettingsPage(),
         '/request': (context) => const AllDepartmentDashboard(),
       },
     );

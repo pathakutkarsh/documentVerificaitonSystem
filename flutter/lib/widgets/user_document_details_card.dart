@@ -3,7 +3,6 @@ import 'package:document_verification_system/constants/size.dart';
 import 'package:document_verification_system/functions/supabase.dart';
 import 'package:document_verification_system/screens/document_detail.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 
 class UserDocumentDetailsCard extends StatefulWidget {
   final Map getRequiredDocumentDetails;
