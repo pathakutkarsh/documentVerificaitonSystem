@@ -4,7 +4,6 @@ import 'package:document_verification_system/functions/supabase.dart';
 import 'package:document_verification_system/screens/dashboard.dart';
 import 'package:document_verification_system/screens/login_screen.dart';
 import 'package:document_verification_system/screens/all_department_dashboard.dart';
-import 'package:document_verification_system/screens/settings_page.dart';
 import 'package:document_verification_system/screens/signup_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';

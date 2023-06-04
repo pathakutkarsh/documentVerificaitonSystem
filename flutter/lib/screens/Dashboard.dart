@@ -33,7 +33,7 @@ class _DashboardState extends State<Dashboard> {
                   width: screenWidth(context) * 0.2,
                   // height: screenHeight(context) * 0.3,
                   child: const Text(
-                    'Congratulations all your Documents are verified\n\nPlease Wait for Futher Actions',
+                    'All of your documents are verified.\nPlease wait for further instructions.',
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       color: primary,

@@ -352,7 +352,7 @@ class _SignupScreenState extends State<SignupScreen> {
                           firstnameController.value.text,
                           lastnameController.value.text,
                           emailController.value.text,
-                          true)),
+                          false)),
                     )
                         .whenComplete(
                       () {

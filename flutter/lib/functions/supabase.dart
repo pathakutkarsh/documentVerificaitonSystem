@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:document_verification_system/constants/variables.dart';
 import 'package:flutter/foundation.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -147,11 +148,27 @@ Future markDocumentAsAccepted(int id) async {
 }
 
 Future<List> checkIfDocumentsAccepted(String userId) async {
+  if (getIsUserCommercial()) {
+    return ['null'];
+  }
+  if (await checkIfFileUploaded(userId)) {
+    return ['null'];
+  }
   return await _supabase
       .from('documents')
       .select('is_accepted')
       .eq('user_id', userId)
       .neq('is_accepted', true);
+}
+
+Future<bool> checkIfFileUploaded(String userId) async {
+  List arefilesUploaded =
+      await _supabase.from('documents').select('user_id').eq('user_id', userId);
+  if (arefilesUploaded.isEmpty) {
+    return true;
+  } else {
+    return false;
+  }
 }
 
 dispose() {

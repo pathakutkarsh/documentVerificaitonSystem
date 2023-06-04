@@ -54,6 +54,7 @@ class _DocumentDetailsState extends State<DocumentDetails> {
           backgroundColor: primary,
           shadowColor: Colors.transparent,
           primary: true,
+          // actions: [IconButton(onPressed: () {}, icon: const Icon(Icons.save))],
         ),
         body: SingleChildScrollView(
           child: Column(

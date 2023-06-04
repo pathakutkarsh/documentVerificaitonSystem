@@ -44,6 +44,9 @@ function executePowerShell(filename) {
   child.stdout.on("data", function (data) {
     // console.log("Powershell Data: " + data);
     var splitdata = String(data).split('\n')
+    console.log(splitdata[0]);
+    console.log(splitdata[1]);
+    console.log(splitdata[2]);
     uploadDataToStoage(splitdata[0].trim()).finally(() => {
       updateDatabaseUsingImageName(filename,splitdata[0].trim(),splitdata[1].trim(),splitdata[2].trim())
     })
