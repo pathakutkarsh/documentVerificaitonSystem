@@ -25,23 +25,34 @@ class _DocumentDetailsState extends State<DocumentDetails> {
   late Uint8List uploadFile;
   bool isFileLoaded = false;
   late DateTime createdOn;
+  bool isCommercial = false;
+  // bool  isCommercial = await isUserCommercial(userId);
   getDownloadedFile() async {
+    // await isUserCommercial(getUserId()).then((value) => isCommercial = value);
     downloadImageFromFileName(widget.imageInfo['edited_image_name'],
             widget.imageInfo['file_name'])
         .then(
-      (value) => setState(
-        () {
-          uploadFile = value;
-          isFileLoaded = true;
-        },
-      ),
-    );
+          (value) => setState(
+            () {
+              uploadFile = value;
+              isFileLoaded = true;
+            },
+          ),
+        )
+        .onError(
+          (error, stackTrace) => showDialog(
+              context: context,
+              builder: (context) {
+                return AlertDialog(
+                  title: Text(error.toString()),
+                );
+              }),
+        );
   }
 
   @override
   void initState() {
     super.initState();
-
     getDownloadedFile();
   }
 
@@ -200,7 +211,9 @@ class _DocumentDetailsState extends State<DocumentDetails> {
                                   markDocumentAsAccepted(widget.imageInfo['id'])
                                       .whenComplete(
                                           () => Navigator.pop(context));
-                                  setState(() {});
+                                  setState(() {
+                                    getDownloadedFile();
+                                  });
                                 },
                                 child: const Text('Yes'),
                               ),

@@ -132,12 +132,19 @@ Future getUserInfoFromDatabase(userId) async {
 
 Future<bool> isUserCommercial(userId) async {
   if (userId == null) {
+    setIsUserCommercial(false);
     return false;
   }
   var response = await _supabase
       .from('users')
       .select('is_commercial')
       .eq('user_id', userId);
+
+  if (response[0]['is_commercial'] == true) {
+    setIsUserCommercial(true);
+  } else {
+    setIsUserCommercial(false);
+  }
   return response[0]['is_commercial'];
 }
 
