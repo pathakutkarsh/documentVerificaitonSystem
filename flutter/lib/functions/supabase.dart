@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:document_verification_system/constants/variables.dart';
 import 'package:flutter/foundation.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -11,27 +12,51 @@ Future<List> getAllDocumentsByUserId(String userId) async {
   return data;
 }
 
-Future<Uint8List> downloadImageFromFileName(String fileName) async {
+Future<Uint8List> downloadImageFromFileName(
+    String fileName, String originalFileName) async {
   String filepath = "/edited/${fileName.trim()}";
+  if (fileName.contains(originalFileName)) {
+    filepath = "/uploaded/${fileName.trim()}";
+  }
   final Uint8List file =
       await _supabase.storage.from('documents').download(filepath);
   return file;
 }
 
-Future<PostgrestFilterBuilder<dynamic>> createNewDocumentRequest(
-    String id, bool aadhar, bool hsc, bool ssc) async {
+Future createNewDocumentRequest(String id, String userId, bool aadhar, bool hsc,
+    bool ssc, String department) async {
   return await _supabase.from('request').insert({
-    'id': id,
+    'request_id': id,
+    'created_by': userId,
     'request_aadhar': aadhar,
     'request_hsc': hsc,
-    'request_ssc': ssc
+    'request_ssc': ssc,
+    'department': department,
   });
 }
 
 Future<Map> getListofRequestedDocumentsFromID(String id) async {
-  final List data = await _supabase.from('request').select('*').eq("id", id);
-  print(data);
+  final List data =
+      await _supabase.from('request').select('*').eq("request_id", id);
   return data[0];
+}
+
+Future<List> getListofRequestedDocumentsFromRequesterId(String userId) async {
+  final List data =
+      await _supabase.from('request').select('*').eq("created_by", userId);
+  if (data.isEmpty) {
+    return [];
+  }
+  return data;
+}
+
+Future<List> getListofRequestedDocumentsByDepartment(String department) async {
+  final List data =
+      await _supabase.from('request').select('*').eq("department", department);
+  if (data.isEmpty) {
+    return [];
+  }
+  return data;
 }
 
 Future uploadNewDocument(
@@ -54,17 +79,18 @@ Future<String> uploadImageToBucket(String filePath, fileName) async {
   dynamic output = await _supabase.storage
       .from('documents')
       .upload('/uploaded/$fileName', File(filePath));
-  print("upload image output is as follows: $output");
   return output;
 }
 
-Future<List> getAllDocumentsByRequesterID(String userId) async {
-  final data =
-      await _supabase.from('documents').select('*').eq("requested_by", userId);
+Future<List> getAllDocumentsByRequesterID(String requesterId) async {
+  final data = await _supabase
+      .from('documents')
+      .select('*')
+      .eq("requested_by", requesterId);
   return data;
 }
 
-Future createNewUser(String email, String password) async {
+Future<AuthResponse> createNewUser(String email, String password) async {
   return await _supabase.auth.signUp(email: email, password: password);
 }
 
@@ -73,14 +99,85 @@ Future signInUser(String email, String password) async {
       .signInWithPassword(email: email, password: password);
 }
 
-getUserSession() {
-  return _supabase.auth.currentSession;
+Future<Session?> getUserSession() async {
+  return await _supabase.auth.currentSession;
 }
 
 Future logoutuser() {
   return _supabase.auth.signOut();
 }
 
-String getUserId() {
-  return _supabase.auth.currentUser!.id;
+Future<String> getUserId() async {
+  return _supabase.auth.currentSession!.user.id;
+}
+
+Future addUserInfoToDatabase(
+    userId, firstName, lastName, email, isCommercial) async {
+  await _supabase.from('users').insert(
+    {
+      'user_id': userId,
+      'first_name': firstName,
+      'last_name': lastName,
+      'email': email,
+      'is_commercial': isCommercial,
+    },
+  );
+}
+
+Future getUserInfoFromDatabase(userId) async {
+  var userDetails =
+      await _supabase.from('users').select('*').eq('user_id', userId);
+  return userDetails[0];
+}
+
+Future<bool> isUserCommercial(userId) async {
+  if (userId == null) {
+    setIsUserCommercial(false);
+    return false;
+  }
+  var response = await _supabase
+      .from('users')
+      .select('is_commercial')
+      .eq('user_id', userId);
+
+  if (response[0]['is_commercial'] == true) {
+    setIsUserCommercial(true);
+  } else {
+    setIsUserCommercial(false);
+  }
+  return response[0]['is_commercial'];
+}
+
+Future markDocumentAsAccepted(int id) async {
+  return await _supabase
+      .from('documents')
+      .update({'is_accepted': true}).eq('id', id);
+}
+
+Future<List> checkIfDocumentsAccepted(String userId) async {
+  if (getIsUserCommercial()) {
+    return ['null'];
+  }
+  if (await checkIfFileUploaded(userId)) {
+    return ['null'];
+  }
+  return await _supabase
+      .from('documents')
+      .select('is_accepted')
+      .eq('user_id', userId)
+      .neq('is_accepted', true);
+}
+
+Future<bool> checkIfFileUploaded(String userId) async {
+  List arefilesUploaded =
+      await _supabase.from('documents').select('user_id').eq('user_id', userId);
+  if (arefilesUploaded.isEmpty) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
+dispose() {
+  return _supabase.dispose();
 }

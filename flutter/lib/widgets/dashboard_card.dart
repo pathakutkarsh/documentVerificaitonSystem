@@ -1,11 +1,7 @@
-import 'dart:io';
-
 import 'package:document_verification_system/constants/colors.dart';
 import 'package:document_verification_system/constants/size.dart';
-import 'package:document_verification_system/functions/supabase.dart';
 import 'package:document_verification_system/screens/document_detail.dart';
 import 'package:document_verification_system/widgets/select_upload_method.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 class DashboardCard extends StatefulWidget {
@@ -79,7 +75,7 @@ class _DashboardCardState extends State<DashboardCard> {
                 MaterialPageRoute(
                     builder: (context) => DocumentDetails(
                           documentName: widget.fileName,
-                          documentID: 'ad',
+                          documentID: widget.imageInfo['id'].toString(),
                           imageInfo: widget.imageInfo,
                         )),
               );

@@ -22,14 +22,23 @@ class _SelectDocumentState extends State<SelectDocument> {
   }
 
   bool isDocumentSelected = false;
-  bool isButtonSelected = false;
+  bool isGenerateButtonClicked = false;
+  bool isDepartmentSelected = false;
   String generatedCode = "";
+  String selectedDepartmentis = 'HR';
   List<String> selectedDocuments = [];
   Map<String, bool> selectionList = {
     "Aadhar": false,
     "HSC Marksheet": false,
     "SSC Marksheet": false,
   };
+  List<DropdownMenuItem<String>> departmentsToSelect =
+      <String>['HR', 'Dev', 'Ops', 'DevOps', 'IT', 'QA'].map((String value) {
+    return DropdownMenuItem<String>(
+      value: value,
+      child: Text(value),
+    );
+  }).toList();
   @override
   Widget build(BuildContext context) {
     return Dialog(
@@ -39,7 +48,7 @@ class _SelectDocumentState extends State<SelectDocument> {
         padding: const EdgeInsets.only(top: size_24, bottom: size_24),
         width: screenWidth(context) * 0.2,
         // height: screenHeight(context) * 0.3,
-        child: isButtonSelected
+        child: isGenerateButtonClicked
             ? Column(
                 mainAxisSize: MainAxisSize.min,
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -72,17 +81,9 @@ class _SelectDocumentState extends State<SelectDocument> {
                       );
                       isDocumentSelected
                           ? {
-                              isButtonSelected = true,
+                              isGenerateButtonClicked = true,
                             }
                           : null;
-                      // Navigator.push(
-                      //   context,
-                      //   MaterialPageRoute(
-                      //     builder: (context) => const RequiredDocumentList(
-                      //       requestID: "adf",
-                      //     ),
-                      //   ),
-                      // );
                     },
                     child: Container(
                       width: 240,
@@ -105,95 +106,124 @@ class _SelectDocumentState extends State<SelectDocument> {
                   )
                 ],
               )
-            : Column(
-                mainAxisSize: MainAxisSize.min,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Text(
-                    "Select The Documents to Request",
-                    style: TextStyle(
-                      color: primary,
-                      fontSize: size_16,
-                      fontWeight: FontWeight.bold,
-                      fontStyle: FontStyle.normal,
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(size_16),
-                    child: ListView.builder(
-                      itemCount: selectionList.length,
-                      shrinkWrap: true,
-                      itemBuilder: (context, index) {
-                        return CheckboxListTile(
-                          checkColor: primary,
-                          title: Text(selectionList.keys.elementAt(index)),
-                          value: selectionList.values.elementAt(index),
-                          onChanged: (value) {
-                            selectionList[selectionList.keys.elementAt(index)] =
-                                value!;
+            : isDepartmentSelected
+                ? Column(
+                    mainAxisSize: MainAxisSize.min,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Text(
+                        "Select The Documents to Request",
+                        style: TextStyle(
+                          color: primary,
+                          fontSize: size_16,
+                          fontWeight: FontWeight.bold,
+                          fontStyle: FontStyle.normal,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(size_16),
+                        child: ListView.builder(
+                          itemCount: selectionList.length,
+                          shrinkWrap: true,
+                          itemBuilder: (context, index) {
+                            return CheckboxListTile(
+                              checkColor: primary,
+                              title: Text(selectionList.keys.elementAt(index)),
+                              value: selectionList.values.elementAt(index),
+                              onChanged: (value) {
+                                selectionList[selectionList.keys
+                                    .elementAt(index)] = value!;
 
-                            setState(
-                              () {
-                                if (value) {
-                                  selectedDocuments
-                                      .add(selectionList.keys.elementAt(index));
-                                } else {
-                                  selectedDocuments.remove(
-                                      selectionList.keys.elementAt(index));
-                                }
-                                selectedDocuments.isNotEmpty
-                                    ? isDocumentSelected = true
-                                    : isDocumentSelected = false;
-                                print(selectedDocuments);
-                                print(selectionList.values.elementAt(index));
+                                setState(
+                                  () {
+                                    if (value) {
+                                      selectedDocuments.add(
+                                          selectionList.keys.elementAt(index));
+                                    } else {
+                                      selectedDocuments.remove(
+                                          selectionList.keys.elementAt(index));
+                                    }
+                                    selectedDocuments.isNotEmpty
+                                        ? isDocumentSelected = true
+                                        : isDocumentSelected = false;
+                                  },
+                                );
                               },
                             );
                           },
-                        );
-                      },
-                    ),
-                  ),
-                  TextButton(
-                    onPressed: () {
-                      setState(
-                        () {},
-                      );
-                      isDocumentSelected
-                          ? {
-                              generatedCode = getRandomString(6),
-                            }
-                          : null;
-                      createNewDocumentRequest(
-                        generatedCode,
-                        selectionList.values.elementAt(0),
-                        selectionList.values.elementAt(1),
-                        selectionList.values.elementAt(2),
-                      ).whenComplete(() => {
-                            isButtonSelected = true,
-                          });
-                    },
-                    child: Container(
-                      width: 240,
-                      height: 50,
-                      decoration: BoxDecoration(
-                        color: isDocumentSelected ? primary : red,
-                        borderRadius: BorderRadius.circular(30),
-                      ),
-                      child: const Center(
-                        child: Text(
-                          "Generate Request Code",
-                          style: TextStyle(
-                              color: base,
-                              fontSize: size_16,
-                              fontWeight: FontWeight.bold,
-                              fontStyle: FontStyle.normal),
                         ),
                       ),
-                    ),
+                      TextButton(
+                        onPressed: () async {
+                          setState(
+                            () {},
+                          );
+                          isDocumentSelected
+                              ? {
+                                  generatedCode = getRandomString(6),
+                                }
+                              : null;
+                          createNewDocumentRequest(
+                            generatedCode,
+                            await getUserId(),
+                            selectionList.values.elementAt(0),
+                            selectionList.values.elementAt(1),
+                            selectionList.values.elementAt(2),
+                            selectedDepartmentis,
+                          ).whenComplete(() => {
+                                isGenerateButtonClicked = true,
+                              });
+                          setState(() {});
+                        },
+                        child: Container(
+                          width: 240,
+                          height: 50,
+                          decoration: BoxDecoration(
+                            color: isDocumentSelected ? primary : red,
+                            borderRadius: BorderRadius.circular(30),
+                          ),
+                          child: const Center(
+                            child: Text(
+                              "Generate Request Code",
+                              style: TextStyle(
+                                  color: base,
+                                  fontSize: size_16,
+                                  fontWeight: FontWeight.bold,
+                                  fontStyle: FontStyle.normal),
+                            ),
+                          ),
+                        ),
+                      )
+                    ],
                   )
-                ],
-              ),
+                : Column(
+                    mainAxisSize: MainAxisSize.min,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Text(
+                        "Select The Department for Request",
+                        style: TextStyle(
+                          color: primary,
+                          fontSize: size_16,
+                          fontWeight: FontWeight.bold,
+                          fontStyle: FontStyle.normal,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                      DropdownButton<String>(
+                        hint: const Text('Select Department'),
+                        // value: departmentsToSelect.first.value,
+                        items: departmentsToSelect,
+                        onChanged: (value) {
+                          setState(() {
+                            isDepartmentSelected = !isDepartmentSelected;
+                            selectedDepartmentis = value.toString();
+                          });
+                        },
+                      ),
+                    ],
+                  ),
       ),
     );
   }

@@ -1,8 +1,8 @@
+import 'dart:async';
+
 import 'package:document_verification_system/constants/colors.dart';
 import 'package:document_verification_system/constants/size.dart';
 import 'package:document_verification_system/functions/supabase.dart';
-import 'package:document_verification_system/screens/dashboard.dart';
-import 'package:document_verification_system/screens/login_screen.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
@@ -123,9 +123,6 @@ class _SignupScreenState extends State<SignupScreen> {
                           fontSize: size_12,
                         ),
                       ),
-                      onChanged: (value) {
-                        print(value);
-                      },
                     ),
                   ),
                   Padding(
@@ -167,9 +164,6 @@ class _SignupScreenState extends State<SignupScreen> {
                           fontSize: size_12,
                         ),
                       ),
-                      onChanged: (value) {
-                        print(value);
-                      },
                     ),
                   ),
                   Padding(
@@ -215,11 +209,9 @@ class _SignupScreenState extends State<SignupScreen> {
                       validator: (value) {
                         if (!RegExp(r'\S+@\S+\.\S+').hasMatch(value!)) {
                           return "Please enter a valid email address";
-                        } else
-                          null;
-                      },
-                      onChanged: (value) {
-                        print(value);
+                        } else {
+                          return null;
+                        }
                       },
                     ),
                   ),
@@ -271,9 +263,6 @@ class _SignupScreenState extends State<SignupScreen> {
                           return null;
                         }
                       },
-                      onChanged: (value) {
-                        print(value);
-                      },
                     ),
                   ),
                   Padding(
@@ -321,12 +310,9 @@ class _SignupScreenState extends State<SignupScreen> {
                         if (passwordController.value.text.compareTo(value!) !=
                             0) {
                           return "Password Not matching";
-                        } else
-                          null;
-                      },
-                      onChanged: (value) {
-                        print(value);
-                        print(rePasswordController.value);
+                        } else {
+                          return null;
+                        }
                       },
                     ),
                   ),
@@ -337,40 +323,53 @@ class _SignupScreenState extends State<SignupScreen> {
               padding: const EdgeInsets.only(top: size_60, bottom: size_12),
               child: InkWell(
                 onTap: () {
-                  showDialog(
-                      context: context,
-                      builder: (context) {
-                        return Dialog(
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: const [
-                              CircularProgressIndicator(),
-                              Dialog(
-                                child: Text('Hold Up while we create Account '),
-                              ),
-                            ],
-                          ),
-                        );
-                      });
+                  if (emailController.value.text.isNotEmpty &&
+                      firstnameController.value.text.isNotEmpty &&
+                      lastnameController.value.text.isNotEmpty &&
+                      passwordController.value.text.isNotEmpty &&
+                      rePasswordController.value.text.isNotEmpty) {
+                    showDialog(
+                        context: context,
+                        builder: (context) {
+                          return const AlertDialog(
+                            content: LinearProgressIndicator(),
+                            title: Text('Hold Up while we create Account'),
+                          );
+                        });
+                  }
+
                   if ((RegExp(r'\S+@\S+\.\S+')
                           .hasMatch(emailController.value.text)) &&
                       passwordController.value.text ==
-                          (rePasswordController.value.text)) {
+                          (rePasswordController.value.text) &&
+                      emailController.value.text.isNotEmpty &&
+                      rePasswordController.value.text.isNotEmpty) {
                     createNewUser(emailController.value.text,
                             passwordController.value.text)
-                        .onError((error, stackTrace) => {
-                              Navigator.pop(context),
-                              showDialog(
-                                  context: context,
-                                  builder: (context) {
-                                    return AlertDialog(
-                                      title: Text(error.toString()),
-                                    );
-                                  }),
-                            })
-                        .whenComplete(() => Navigator.pushReplacementNamed(
-                            context, '/dashboard'));
+                        .then(
+                      (value) => (addUserInfoToDatabase(
+                          value.user!.id,
+                          firstnameController.value.text,
+                          lastnameController.value.text,
+                          emailController.value.text,
+                          false)),
+                    )
+                        .whenComplete(
+                      () {
+                        Navigator.pushReplacementNamed(context, '/dashboard');
+                      },
+                    ).onError((error, stackTrace) {
+                      Navigator.pop(context);
+                      showDialog(
+                        context: context,
+                        builder: (context) {
+                          return AlertDialog(
+                            title: Text(error.toString()),
+                          );
+                        },
+                      );
+                      throw error!;
+                    });
                   } else {
                     showDialog(
                         context: context,

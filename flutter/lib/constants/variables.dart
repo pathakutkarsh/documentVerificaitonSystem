@@ -1,9 +1,9 @@
-String _serverUrl = "";
+bool _isUserCommercial = false;
 
-getServerURL() {
-  return _serverUrl;
+getIsUserCommercial() {
+  return _isUserCommercial;
 }
 
-setServerURL(String url) {
-  _serverUrl = url;
+setIsUserCommercial(bool isCommercial) {
+  _isUserCommercial = isCommercial;
 }

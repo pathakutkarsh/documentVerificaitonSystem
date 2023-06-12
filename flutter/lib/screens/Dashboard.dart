@@ -14,16 +14,41 @@ class Dashboard extends StatefulWidget {
 }
 
 class _DashboardState extends State<Dashboard> {
-  dynamic listofUserDocuments = {};
+  dynamic listofUserDocuments;
   bool isDataLoaded = false;
 
   documentData() async {
-    await getAllDocumentsByUserId(getUserId())
+    var userId = await getUserId();
+    await checkIfDocumentsAccepted(userId).then((value) {
+      if (value.isEmpty) {
+        showDialog(
+            context: context,
+            builder: (context) {
+              return AlertDialog(
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(35)),
+                backgroundColor: base,
+                title: Container(
+                  padding: const EdgeInsets.only(top: size_24, bottom: size_24),
+                  width: screenWidth(context) * 0.2,
+                  // height: screenHeight(context) * 0.3,
+                  child: const Text(
+                    'All of your documents are verified.\nPlease wait for further instructions.',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      color: primary,
+                    ),
+                  ),
+                ),
+              );
+            });
+      }
+    });
+    await getAllDocumentsByUserId(userId)
         .then((value) => setState(
               () {
                 listofUserDocuments = value;
                 isDataLoaded = true;
-                print(value);
               },
             ))
         .onError(
@@ -71,15 +96,7 @@ class _DashboardState extends State<Dashboard> {
               title: const Text("Log Out"),
               onTap: () {
                 logoutuser().whenComplete(
-                    () => {Navigator.pushReplacementNamed(context, '/')});
-              },
-            ),
-            ListTile(
-              contentPadding: const EdgeInsets.symmetric(horizontal: size_20),
-              trailing: const Icon(Icons.settings),
-              title: const Text("Settings"),
-              onTap: () {
-                Navigator.pushReplacementNamed(context, '/settings');
+                    () => {Navigator.pushReplacementNamed(context, '/login')});
               },
             ),
           ],
@@ -123,29 +140,45 @@ class _DashboardState extends State<Dashboard> {
           isDataLoaded
               ? Expanded(
                   child: RefreshIndicator(
-                  onRefresh: () async {
-                    setState(() {
-                      isDataLoaded = false;
-                    });
-                    await documentData();
-                  },
-                  child: ListView.builder(
-                    padding: kIsWeb
-                        ? EdgeInsets.only(
-                            left: screenWidth(context) * 0.3,
-                            right: screenWidth(context) * 0.3,
-                            bottom: screenHeight(context) * 0.14)
-                        : EdgeInsets.only(bottom: screenHeight(context) * 0.14),
-                    shrinkWrap: true,
-                    itemCount: listofUserDocuments.length,
-                    itemBuilder: ((context, index) {
-                      return DashboardCard(
-                        fileName: listofUserDocuments[index]['file_type'],
-                        imageInfo: listofUserDocuments[index],
-                      );
-                    }),
+                    onRefresh: () async {
+                      setState(() {
+                        isDataLoaded = false;
+                      });
+                      await documentData();
+                    },
+                    child: listofUserDocuments.isNotEmpty
+                        ? ListView.builder(
+                            padding: kIsWeb
+                                ? EdgeInsets.only(
+                                    left: screenWidth(context) * 0.3,
+                                    right: screenWidth(context) * 0.3,
+                                    bottom: screenHeight(context) * 0.14)
+                                : EdgeInsets.only(
+                                    bottom: screenHeight(context) * 0.14),
+                            shrinkWrap: true,
+                            itemCount: listofUserDocuments.length,
+                            itemBuilder: ((context, index) {
+                              return DashboardCard(
+                                fileName: listofUserDocuments[index]
+                                    ['file_type'],
+                                imageInfo: listofUserDocuments[index],
+                              );
+                            }),
+                          )
+                        : Column(
+                            children: [
+                              Image.asset('lib/assets/fileUpload.png'),
+                              const Text(
+                                "Looks Like No Documents are Uploaded \n Use the Button below to start uploading",
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  fontSize: size_16,
+                                ),
+                              ),
+                            ],
+                          ),
                   ),
-                ))
+                )
               : const Center(child: CircularProgressIndicator()),
         ],
       ),

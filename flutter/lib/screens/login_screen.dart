@@ -1,8 +1,6 @@
 import 'package:document_verification_system/constants/colors.dart';
 import 'package:document_verification_system/constants/size.dart';
 import 'package:document_verification_system/functions/supabase.dart';
-import 'package:document_verification_system/screens/dashboard.dart';
-import 'package:document_verification_system/screens/request_documents.dart';
 import 'package:document_verification_system/screens/signup_screen.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -73,7 +71,7 @@ class _LoginScreenState extends State<LoginScreen> {
             Padding(
               padding: kIsWeb
                   ? EdgeInsets.symmetric(horizontal: screenWidth(context) * 0.3)
-                  : EdgeInsets.all(0),
+                  : const EdgeInsets.all(0),
               child: Column(
                 children: [
                   Padding(
@@ -119,11 +117,9 @@ class _LoginScreenState extends State<LoginScreen> {
                       validator: (value) {
                         if (!RegExp(r'\S+@\S+\.\S+').hasMatch(value!)) {
                           return "Please enter a valid email address";
-                        } else
-                          null;
-                      },
-                      onChanged: (value) {
-                        print(value);
+                        } else {
+                          return null;
+                        }
                       },
                     ),
                   ),
@@ -175,9 +171,6 @@ class _LoginScreenState extends State<LoginScreen> {
                           return null;
                         }
                       },
-                      onChanged: (value) {
-                        print(value);
-                      },
                     ),
                   ),
                 ],
@@ -187,44 +180,45 @@ class _LoginScreenState extends State<LoginScreen> {
               padding: const EdgeInsets.only(top: size_60, bottom: size_12),
               child: InkWell(
                 onTap: () {
-                  showDialog(
+                  if (emailController.value.text.isNotEmpty &&
+                      passwordController.value.text.isNotEmpty) {
+                    showDialog(
                       context: context,
                       builder: (context) {
-                        return Dialog(
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: const [
-                              CircularProgressIndicator(),
-                              Dialog(
-                                child: Text('Hold Up while we Authenticate'),
-                              ),
-                            ],
-                          ),
+                        return const AlertDialog(
+                          content: LinearProgressIndicator(),
+                          title: Text('Hold Up while we Authenticate'),
                         );
-                      });
-                  signInUser(emailController.value.text,
-                          passwordController.value.text)
-                      .onError((error, stackTrace) => {
-                            Navigator.pop(context),
-                            showDialog(
-                                context: context,
-                                builder: (context) {
-                                  return AlertDialog(
-                                    title: Text(error.toString()),
-                                  );
-                                }),
-                          })
-                      .whenComplete(() => {
-                            Navigator.pushReplacementNamed(
-                                context, '/dashboard')
-                          });
-                  // Navigator.push(
-                  //   context,
-                  //   MaterialPageRoute(
-                  //     builder: (context) => RequestDocument(),
-                  //   ),
-                  // );
+                      },
+                    );
+                    signInUser(emailController.value.text,
+                            passwordController.value.text)
+                        .onError((error, stackTrace) => {
+                              Navigator.pop(context),
+                              showDialog(
+                                  context: context,
+                                  builder: (context) {
+                                    return AlertDialog(
+                                      title: Text(error.toString()),
+                                    );
+                                  }),
+                            })
+                        .whenComplete(() async {
+                      String userId = await getUserId();
+                      bool isCommercialLogin = await isUserCommercial(userId);
+                      Navigator.pushReplacementNamed(context,
+                          isCommercialLogin ? '/request' : '/dashboard');
+                    });
+                  } else {
+                    showDialog(
+                      context: context,
+                      builder: (context) {
+                        return const AlertDialog(
+                          title: Text('Invalid Email and Password'),
+                        );
+                      },
+                    );
+                  }
                 },
                 child: Container(
                   width: 240,

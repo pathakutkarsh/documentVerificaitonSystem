@@ -36,6 +36,7 @@ dependencies:
   cupertino_icons: ^1.0.2
   image_picker: ^0.8.7
   supabase_flutter: ^1.9.0
+  intl: ^0.18.1
 
 dev_dependencies:
   flutter_test:
@@ -62,6 +63,7 @@ flutter:
   # To add assets to your application, add an assets section, like this:
   assets:
     - lib/assets/pdf.png
+    - lib/assets/fileUpload.png
     - lib/assets/icons/
   #   - images/a_dot_ham.jpeg
 
